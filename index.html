@@ -1,30 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" charset="UTF-8">
 <head>
-	<title>A Game!</title>
+	<!-- Google Tag Manager -->
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-K86DNQT');</script>
+	<!-- End Google Tag Manager -->
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-5GPV8J22GM"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'G-5GPV8J22GM');
+	</script>
+
+	<title>Anomene</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-	<script src="scripts/scripts.js"></script>
+	
 	<link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+	<script src="scripts/scripts.js"></script>
 	<link rel="stylesheet" href="styles/style.css" />
 </head>
 <body>
+	<!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K86DNQT"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
+
 	<div class="container-fluid">
 	
-	</div>
-	
+	</div><!-- .container-fluid -->
+	<div id="dlkjasd09clue812333"></div>
 	<div class="arena"></div>
-	<div class="levelno">3</div>
-	<form class="answerzone">
-		<input type="text" class="answerme" placeholder=" ">
-		<input type="submit" class="answersubmit" value="&gt;">
-	</form>
-	<span class="clue-1 clue">1</span>
-	<span class="clue-2 clue">2</span>
-	<span class="clue-3 clue">3</span>
-	<span class="clue-4 clue">4</span>
+	<!-- Level No -->
+	<div class="levelno" id="levelno">3</div>
+	<div id="hamburger"><a class="glyphicon glyphicon-menu-hamburger"></a></div>
+	<!-- Answer zone -->
+	<form class="answerzone" id="answer">
+		<p class="question" id="question"></p>
+		<input type="text" class="answerme" placeholder=" " id="answeranswer" name="answer">
+		<button type="submit" class="answersubmit">
+			<i class="glyphicon glyphicon-chevron-right"></i>
+		</button>
+	</form> <!-- #answer.answerzone -->
+	<!-- Clue buttons -->
+	<div class="cluezone">
+		<button data-toggle="modal" data-target="#clueModal" data-name="clue-1" data-clue="1" class="clue-1 clue">
+			<i class="glyphicon glyphicon-asterisk"></i>
+		</button>
+		<button data-toggle="modal" data-target="#clueModal" data-name="clue-2" data-clue="2" class="clue-2 clue">
+			<i class="glyphicon glyphicon-asterisk"></i>
+		</button>
+		<button data-toggle="modal" data-target="#clueModal" data-name="clue-3" data-clue="3" class="clue-3 clue">
+			<i class="glyphicon glyphicon-asterisk"></i>
+		</button>
+		<button data-toggle="modal" data-target="#clueModal" data-name="clue-4" data-clue="4" class="clue-4 clue">
+			<i class="glyphicon glyphicon-asterisk"></i>
+		</button>
+	</div> <!-- .cluezone -->
 
+	<!-- clueModal -->
+	<div class="modal" id="clueModal" tabindex="-1" role="dialog" aria-labelledby="clueModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="clueModallLabel">Modal title</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Ok</button>
+				</div>
+			</div>
+		</div>
+	</div> <!-- clueModal -->
+	<!-- finalModal -->
+	<div class="modal" id="finalModal" tabindex="-1" role="dialog" aria-labelledby="finalModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="finalModallLabel">🤫</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Aaaaahhhh!</button>
+				</div>
+			</div>
+		</div>
+	</div> <!-- finalModal -->
 </body>
 </html>

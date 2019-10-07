@@ -1,3 +1,7 @@
+/* ANOMENE.COM 
+	Author: @hypnosh
+*/
+
 $( function() {
 	// read localStorage to figure out which level we are at
 	// send out message in a bottle to get the level's deets
@@ -18,6 +22,10 @@ $( function() {
 		"You don't say!",
 		"Cool"
 	];
+	$('[data-toggle="tooltip"]').tooltip();
+	if (localStorage.anemone_level == undefined) {
+		localStorage.anemone_level = 1;
+	}
 	var level = localStorage.anemone_level;
 	$("#levelno").text(level);
 	if (level > 9999) {
@@ -35,7 +43,7 @@ $( function() {
 		},
 		"img": "http://recaptured.in/puzz/wp-content/uploads/2019/08/Screen-Shot-2019-08-01-at-9.45.33-PM.png",
 		"clue-1": {"type": "text", "value": "yet another hello world"},
-		"clue-2": {"type": "link", "value": "http://recaptured.in/puzz/wp-content/uploads/2019/08/Screen-Shot-2019-08-01-at-9.45.33-PM.png"},
+		"clue-2": {"type": "url", "value": "http://recaptured.in/puzz/wp-content/uploads/2019/08/Screen-Shot-2019-08-01-at-9.45.33-PM.png"},
 		"clue-3": {"type": "image", "value": "http://recaptured.in/puzz/wp-content/uploads/2019/08/Screen-Shot-2019-08-01-at-9.45.33-PM.png", "width": 300, "height": 300 },
 		"clue-4": {"type": "text", "value": "hello world"},
 		"source-clue": "Hell here it is!"
@@ -46,6 +54,7 @@ $( function() {
 	$("#question").html(o.question);
 	$("#answeranswer").focus();
 
+	// when the player submits an answer
 	$("#answer").submit(function(e) {
 		e.preventDefault();
 		var myanswer = $("#answeranswer").val();
@@ -69,6 +78,7 @@ $( function() {
 	}
 
 	var cluecounter = 0;
+
 	$("#clueModal").on('show.bs.modal', function(event) {
 		var btn = $(event.relatedTarget);
 		var whichClue = btn.data("name");
@@ -84,20 +94,44 @@ $( function() {
 			modal.find(".modal-body").text(objjvalue);
 		} else if (objjtype == "image") {
 			modal.find(".modal-body").html("<div class='clue-embedded' style='background-image: url(" + objjvalue +"); width: " + objj.width + "px; height:" + objj.height + "px;'>");
-		} else if (objjtype == "link") {
+		} else if (objjtype == "url") {
 			modal.find(".modal-body").html("<a target='_blank' href='" + objjvalue + "'>How about you try looking here?</a>");
 		}
 	
-		btn.css('opacity', .6).css('color', "#848C45").attr('disabled', "true").html("<i class='glyphicon glyphicon-remove'></i>");
+		btn.find('i').tooltip('dispose');
+		btn.css('opacity', .6).css('color', "#848C45").attr('disabled', "true").html("<i class='glyphicon glyphicon-remove' data-toggle='tooltip' data-placement='top'></i>");
+		btn.find('i').attr('title', "You have already used up this clue!").tooltip();
 		cluecounter++;
 	}); // #clueModal show
 
 	$("#clueModal").on('hidden.bs.modal', function (e) {
-		if ((cluecounter == 4) && (Math.random() > 0.3) && localStorage.anemone_source != 1) {
+		if ((cluecounter == 4) && (Math.random() > 0.3) && localStorage.anemone_sourcehint != 1) {
 			$("#finalModal").find(".modal-body").text("Psssst! Have you pressed F12 yet?");
 			$("#finalModal").modal('show');
-			localStorage.anemone_source = 1;
+			localStorage.anemone_sourcehint = 1;
 		}
 	}); // #clueModal hidden
 	
 }); // $
+
+var oneByOneVar;
+function oneByOne(theObject, theText, oneByOneCounter) {
+	theObject.attr('disabled', "true");
+	
+	if (oneByOneCounter == 0) {	
+		// first iteration
+		theObject.val('');
+	} 
+	var targetText = theObject.val();
+	if (targetText.length == theText.length) {
+		// routine complete
+		theObject.removeAttr('disabled');
+		clearTimeout(oneByOneVar);
+	} else {
+		oneByOneCounter++;
+		oneByOneVar = setTimeout(function() { oneByOne(theObject, theText, oneByOneCounter); }, Math.random() * 100 + 50);
+		var runningText = theText.substr(0, oneByOneCounter);
+		theObject.val(runningText);
+	}
+	
+} // oneByOne

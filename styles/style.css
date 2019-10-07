@@ -115,3 +115,9 @@
 /*.clue-4 {
 	color: #BCBF5A;
 }*/
+
+.tooltip-inner {
+	font-size: 9pt;
+	max-width: 100px;
+	text-align: left;
+}

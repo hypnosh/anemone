@@ -24,14 +24,21 @@ $( function() {
 	];
 	$('[data-toggle="tooltip"]').tooltip();
 	if (localStorage.anemone_level == undefined) {
-		localStorage.anemone_level = 1;
+		localStorage.anemone_level = 17;
 	}
-	var level = localStorage.anemone_level;
-	$("#levelno").text(level);
-	if (level > 9999) {
-		$("#levelno").addClass('levelnolarge');
+	/* debug section */
+	var hashh = window.location.hash;
+	if (hashh.split("=")[0] == "#debug") {
+		var level = hashh.split("=")[1];
+		var debug = 1;
+	} else {
+		var level = localStorage.anemone_level;
+		var debug = 0;
 	}
+		console.log(level);
+	
 	// fetch level details based on levelno
+
 	var o = {
 		"title": "In the shade",
 		"question": "What are we looking at?",
@@ -49,68 +56,93 @@ $( function() {
 		"source-clue": "Hell here it is!"
 	}; // o dummy
 	
-	$(".arena").css('backgroundImage', 'url(' + o.img + ')');
-	document.title = "Anomene - " + o.title;
-	$("#question").html(o.question);
-	$("#answeranswer").focus();
+	jQuery.ajax({
+		url: "http://recaptured.in/puzz/wp-json/wp/v2/r3d4?level=" + level,
+		success: function(result) {
+			
+			o = result;
+			var current = o.current;
+			$("#levelno").text(current);
+			if (current > 9999) {
+				$("#levelno").addClass('levelnolarge');
+			}
+			$(".arena").css('backgroundImage', 'url(' + o.img + ')');
+			document.title = "Anomene - " + o.title;
+			$("#question").html(o.question);
+			$("#answeranswer").focus();
 
-	// when the player submits an answer
-	$("#answer").submit(function(e) {
-		e.preventDefault();
-		var myanswer = $("#answeranswer").val();
-		if (myanswer == o.answer) {
-			// success! move ahead!
-			localStorage.anemone_level = parseInt(localStorage.anemone_level) + 1;
-		} else {
-			var routes = o.routes;
+			// when the player submits an answer
+			$("#answer").submit(function(e) {
+				e.preventDefault();
+				var myanswer = $("#answeranswer").val().toLowerCase();
+				if (myanswer == o.answer) {
+					// success! move ahead!
+					// send ga event with level number & answer
+					if (debug == 0) {
+						localStorage.anemone_level = o.next;
+					}
+					// reload page
+					window.reload();
+				} else {
+					var routes = o.routes;
+					var response = routes[myanswer];
+					if (response == undefined) {
+						response = "Wrong. Try again";
+					}
+					oneByOne($("#answeranswer"), response, 0);
+					// send ga event with level number & myanswer
+				}
+			}); // .answerzone submit
+			
+			var hint5 = o["source-clue"];
+			$("#dlkjasd09812333").text("<!--" + hint5 + "-->");
+			
+			for (var i = 4; i >= 1; i--) {
+				var lft = window.innerWidth / 2 + (i - 2.5) * 80 - 35;
+				if (o["clue-" + i] != undefined) {
+					$(".clue-" + i).removeClass("hidden");
+				}
+			}
 
+			var cluecounter = 0;
+
+			$("#clueModal").on('show.bs.modal', function(event) {
+				var btn = $(event.relatedTarget);
+				var whichClue = btn.data("name");
+				var objj = o[whichClue];
+				var objjcluenumber = btn.data("clue");
+				var objjtype = objj.type;
+				var objjvalue = objj.value;
+
+				var modal = $(this);
+				modal.find(".modal-title").text("Clue #" + objjcluenumber);
+				modal.find(".modal-footer").find("button").text(buttonTexts[Math.floor(Math.random() * Math.floor(buttonTexts.length))]);
+				if (objjtype == "text") {
+					modal.find(".modal-body").text(objjvalue);
+				} else if (objjtype == "image") {
+					modal.find(".modal-body").html("<div class='clue-embedded' style='background-image: url(" + objjvalue +"); width: " + objj.width + "px; height:" + objj.height + "px;'>");
+				} else if (objjtype == "url") {
+					modal.find(".modal-body").html("<a target='_blank' href='" + objjvalue + "'>How about you try looking here?</a>");
+				}
+			
+				btn.find('i').tooltip('dispose');
+				btn.css('opacity', .6).css('color', "#848C45").attr('disabled', "true").html("<i class='glyphicon glyphicon-remove' data-toggle='tooltip' data-placement='top'></i>");
+				btn.find('i').attr('title', "You have already used up this clue!").tooltip();
+				cluecounter++;
+			}); // #clueModal show
+
+			$("#clueModal").on('hidden.bs.modal', function (e) {
+				if ((cluecounter == 4) && (Math.random() > 0.3) && localStorage.anemone_sourcehint != 1) {
+					$("#finalModal").find(".modal-body").text("Psssst! Have you pressed F12 yet?");
+					$("#finalModal").modal('show');
+					if (debug == 0) {
+						localStorage.anemone_sourcehint = 1;
+					}
+				}
+			}); // #clueModal hidden
 		}
-	}); // .answerzone submit
-	
-	var hint5 = o["source-clue"];
-	$("#dlkjasd09812333").text("<!--" + hint5 + "-->");
-	
-	for (var i = 4; i >= 1; i--) {
-		var lft = window.innerWidth / 2 + (i - 2.5) * 80 - 35;
-		if (o["clue-" + i] == undefined) {
-			$(".clue-" + i).hide();
-		}
-	}
+	});
 
-	var cluecounter = 0;
-
-	$("#clueModal").on('show.bs.modal', function(event) {
-		var btn = $(event.relatedTarget);
-		var whichClue = btn.data("name");
-		var objj = o[whichClue];
-		var objjcluenumber = btn.data("clue");
-		var objjtype = objj.type;
-		var objjvalue = objj.value;
-
-		var modal = $(this);
-		modal.find(".modal-title").text("Clue #" + objjcluenumber);
-		modal.find(".modal-footer").find("button").text(buttonTexts[Math.floor(Math.random() * Math.floor(buttonTexts.length))]);
-		if (objjtype == "text") {
-			modal.find(".modal-body").text(objjvalue);
-		} else if (objjtype == "image") {
-			modal.find(".modal-body").html("<div class='clue-embedded' style='background-image: url(" + objjvalue +"); width: " + objj.width + "px; height:" + objj.height + "px;'>");
-		} else if (objjtype == "url") {
-			modal.find(".modal-body").html("<a target='_blank' href='" + objjvalue + "'>How about you try looking here?</a>");
-		}
-	
-		btn.find('i').tooltip('dispose');
-		btn.css('opacity', .6).css('color', "#848C45").attr('disabled', "true").html("<i class='glyphicon glyphicon-remove' data-toggle='tooltip' data-placement='top'></i>");
-		btn.find('i').attr('title', "You have already used up this clue!").tooltip();
-		cluecounter++;
-	}); // #clueModal show
-
-	$("#clueModal").on('hidden.bs.modal', function (e) {
-		if ((cluecounter == 4) && (Math.random() > 0.3) && localStorage.anemone_sourcehint != 1) {
-			$("#finalModal").find(".modal-body").text("Psssst! Have you pressed F12 yet?");
-			$("#finalModal").modal('show');
-			localStorage.anemone_sourcehint = 1;
-		}
-	}); // #clueModal hidden
 	
 }); // $
 
@@ -121,16 +153,21 @@ function oneByOne(theObject, theText, oneByOneCounter) {
 	if (oneByOneCounter == 0) {	
 		// first iteration
 		theObject.val('');
-	} 
+		var delayVar = 800;
+	} else {
+		delayVar = Math.random() * 100 + 30;
+	}
 	var targetText = theObject.val();
 	if (targetText.length == theText.length) {
 		// routine complete
-		theObject.removeAttr('disabled');
+		theObject.removeAttr('disabled').focus().select();
+
 		clearTimeout(oneByOneVar);
 	} else {
-		oneByOneCounter++;
-		oneByOneVar = setTimeout(function() { oneByOne(theObject, theText, oneByOneCounter); }, Math.random() * 100 + 50);
+
+		oneByOneVar = setTimeout(function() { oneByOne(theObject, theText, oneByOneCounter); }, delayVar);
 		var runningText = theText.substr(0, oneByOneCounter);
+		oneByOneCounter++;
 		theObject.val(runningText);
 	}
 	

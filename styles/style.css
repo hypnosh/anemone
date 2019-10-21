@@ -1,10 +1,14 @@
-
+.hidden {
+	display: none;
+}
 .arena {
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
+	background-size: cover;
+	opacity: .5;
 }
 #dlkjasd09clue812333 {
 	position: absolute;
@@ -49,6 +53,32 @@
 	left: 50%;
 	width: 35%;
 	bottom: 30%;
+	padding: 20px;
+	background: rgba(255,255,255,.9);
+}
+
+.answerme {
+	border: none;
+	font-size: 30pt;
+	width: 80%;
+	/*margin-left: -60px;*/
+	background: transparent;
+	text-decoration: underline;
+	display: inline;
+}
+
+
+
+.answersubmit {
+	display: inline;
+	background: none;
+	border: none;
+	font-size: 30px;
+	width: 50px;
+	max-width: 20%;
+}
+.answersubmit:hover {
+	background: rgba(140, 140, 140, 1);
 }
 
 @media only screen and (max-width: 500px) {
@@ -58,29 +88,11 @@
 		margin-left: -150px;
 		width: 300px;
 		bottom: 20%;
-		height: 20%;
+		
 	}	
-}
-
-.answerme {
-	border: none;
-	font-size: 30pt;
-	width: 100%;
-	margin-right: -60px;
-	background: transparent;
-	text-decoration: underline;
-	display: inline;
-}
-
-.answersubmit {
-	display: inline;
-	background: none;
-	border: none;
-	font-size: 30px;
-	width: 50px;
-}
-.answersubmit:hover {
-	background: rgba(255,255,255,.5);
+	.answerme {
+		font-size: 20pt;
+	}
 }
 
 .cluezone {

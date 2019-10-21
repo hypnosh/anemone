@@ -17,32 +17,54 @@ function anomene_get_level() {
 
 	$lvl = get_post($level);
 	$paraphernalia = get_field_objects($level);
-	$r1 = explode(", ", $paraphernalia['route_1']['value']);
-	$routes = array(
-			$r1[0]	=> $r1[1],
-		);
-	$clue1 = array(
-				"type"	=> $paraphernalia['clue_1']['type'],
-				"value"	=> $paraphernalia['clue_1']['value'],
-			);
-	$clue2 = array(
-				"type"	=> $paraphernalia['clue_2']['type'],
-				"value"	=> $paraphernalia['clue_2']['value'],
-			);
-	$clue3 = array(
-				"type"	=> $paraphernalia['clue_3']['type'],
-				"value"	=> $paraphernalia['clue_3']['value'],
-			);
-	$clue4 = array(
-				"type"	=> $paraphernalia['clue_4']['type'],
-				"value"	=> $paraphernalia['clue_4']['value'],
-			);
+	$r1 = explode("; ", $paraphernalia['route_1']['value']);
+	$routes = array();
+	foreach ($r1 as $key => $value) {
+		$r2 = explode(": ", $value);
+		$routes[strtolower($r2[0])] = $r2[1];
+	}
+	
+	if ($paraphernalia['clue_1']['value'] == null) {
+		$clue1 = null;	
+	} else {
+		$clue1 = array(
+					"type"	=> $paraphernalia['clue_1']['type'],
+					"value"	=> $paraphernalia['clue_1']['value'],
+				);
+	}
+	if ($paraphernalia['clue_2']['value'] == null) {
+		$clue2 = null;	
+	} else {
+		$clue2 = array(
+					"type"	=> $paraphernalia['clue_2']['type'],
+					"value"	=> $paraphernalia['clue_2']['value'],
+				);
+	}
+	if ($paraphernalia['clue_3']['value'] == null) {
+		$clue3 = null;	
+	} else {
+		$clue3 = array(
+					"type"	=> $paraphernalia['clue_3']['type'],
+					"value"	=> $paraphernalia['clue_3']['value'],
+				);
+	}
+	if ($paraphernalia['clue_4']['value'] == null) {
+		$clue4 = null;	
+	} else {
+		$clue4 = array(
+					"type"	=> $paraphernalia['clue_4']['type'],
+					"value"	=> $paraphernalia['clue_4']['value'],
+				);
+	}	
 	$source_clue = "source";
+	$img = get_the_post_thumbnail_url($level, 'full');
+
 	$out = array(
+		"current"	=> $paraphernalia['current']['value'],
 		"title"		=> $lvl->post_title,
 		"question"	=> wp_strip_all_tags($lvl->post_content),
-		"answer"	=> $paraphernalia['answer']['value'],
-		"img"		=> '',
+		"answer"	=> strtolower($paraphernalia['answer']['value']),
+		"img"		=> $img,
 		"routes"	=> $routes,
 		"clue-1"	=> $clue1,
 		"clue-2"	=> $clue2,

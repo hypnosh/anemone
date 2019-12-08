@@ -16,12 +16,6 @@
 	top: -200px;
 	display: none;
 }
-#hamburger {
-	position: absolute;
-	left: 20px;
-	top: 20px;
-	font-size: 30px;
-}
 .levelno {
 	position: absolute;
 	top: 15px;
@@ -132,4 +126,41 @@
 	font-size: 9pt;
 	max-width: 100px;
 	text-align: left;
+}
+#hamburger {
+	position: absolute;
+	left: 20px;
+	top: 20px;
+	font-size: 30px;
+	width: 20px;
+	cursor: pointer;
+}
+.panel {
+	position: absolute;
+	height: 100%;
+	top: 0;
+	left: 0;
+	background-color: #fff;
+	min-width: 300px;
+	width: 25%;
+}
+	.anomene-title {
+		font-family: fantasy;
+		font-size: 10pt;
+	}
+	.menu-close {
+		position: absolute;
+		right: 5px;
+		top: 5px;
+	}
+	.menu-item-sign-in {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+	}
+.panel-closed {
+	left: -300px;
+}
+.panel-opened {
+	left: 0;
 }

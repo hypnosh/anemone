@@ -15,6 +15,8 @@
 	<meta name="description" content="Let's play!">
 	<meta name="robots" content="index, nofollow">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="google-signin-client_id" content="229307573843-gd329tsm9g94em157oo5gla29pb9ebtr.apps.googleusercontent.com">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' code.jquery.com cdnjs.cloudflare.com netdna.bootstrapcdn.com stackpath.bootstrapcdn.com apis.google.com; object-src 'none'">
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 	<link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
@@ -37,9 +39,11 @@
 	</div><!-- .container-fluid -->
 	<div id="dlkjasd09clue812333"></div>
 	<div class="arena"></div>
+
+
 	<!-- Level No -->
 	<div class="levelno" id="levelno"></div>
-	<div id="hamburger"><a class="glyphicon glyphicon-menu-hamburger"></a></div>
+	<div id="hamburger"><a class="glyphicon glyphicon-menu-hamburger" class=""></a></div>
 	<!-- Answer zone -->
 	<form class="answerzone" id="answer">
 		<p class="question" id="question"></p>
@@ -100,5 +104,17 @@
 			</div>
 		</div>
 	</div> <!-- finalModal -->
+	<div id="hamburger-menu" class="panel">
+		<h1 class="anomene-title">Anomene</h1>
+		<a class="glyphicon glyphicon-remove menu-close"></a>
+		<ul class="list-group list-group-flush">
+			<li class="list-group-item menu-item">Hello World!</li>
+			<li class="list-group-item menu-item menu-item-sign-in">
+				<!-- Google Sign-in -->
+				<div class="g-signin2" data-onsuccess="onSignIn"></div>
+			</li>
+		</ul> <!-- .list-group -->
+	</div> <!-- #hamburger -->
 </body>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
 </html>

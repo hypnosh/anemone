@@ -37,6 +37,13 @@ $( function() {
 	}
 		console.log(level);
 	
+	$("#hamburger").click( function() {
+		$("#hamburger-menu").removeClass("panel-closed").addClass("panel-opened");
+	}); // #hamburger.click
+	$(".menu-close").click( function() {
+		$("#hamburger-menu").addClass("panel-closed").removeClass("panel-opened");
+	}); // .menu-close.click
+
 	// fetch level details based on levelno
 
 	var o = {
@@ -62,12 +69,15 @@ $( function() {
 			
 			o = result;
 			var current = o.current;
+
 			$("#levelno").text(current);
 			if (current > 9999) {
 				$("#levelno").addClass('levelnolarge');
 			}
 			$(".arena").css('backgroundImage', 'url(' + o.img + ')');
 			document.title = "Anomene - " + o.title;
+			var user = 0;
+			// window.history.pushState({'page': current, 'user': user}, "", o.title);
 			$("#question").html(o.question);
 			$("#answeranswer").focus();
 
@@ -96,6 +106,7 @@ $( function() {
 			
 			var hint5 = o["source-clue"];
 			$("#dlkjasd09812333").text("<!--" + hint5 + "-->");
+			// if mobile, then put hint5 on the page, not in source
 			
 			for (var i = 4; i >= 1; i--) {
 				var lft = window.innerWidth / 2 + (i - 2.5) * 80 - 35;
@@ -141,13 +152,16 @@ $( function() {
 				}
 			}); // #clueModal hidden
 		}
-	});
+	}); // fetching the level
 
 	
 }); // $
 
 var oneByOneVar;
 function oneByOne(theObject, theText, oneByOneCounter) {
+	// fill text slowly
+
+
 	theObject.attr('disabled', "true");
 	
 	if (oneByOneCounter == 0) {	
@@ -172,3 +186,25 @@ function oneByOne(theObject, theText, oneByOneCounter) {
 	}
 	
 } // oneByOne
+
+
+function onSignIn(googleUser) {
+	var profile = googleUser.getBasicProfile();
+	var id = profile.getId();
+	console.log('ID: ' + id); // Do not send to your backend! Use an ID token instead.
+	console.log('Name: ' + profile.getName());
+	console.log('Image URL: ' + profile.getImageUrl());
+	console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+	localStorage.anemone_userid = id;
+} // onSignIn - google
+
+function signOut() {
+	var auth2 = gapi.auth2.getAuthInstance();
+	auth2.signOut().then(function () {
+		console.log('User signed out.');
+	});
+} // signOut - google
+
+function toggleNav() {
+
+} // toggleNav - hamburger menu

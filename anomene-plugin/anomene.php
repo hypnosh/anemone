@@ -15,6 +15,7 @@ function anomene_get_level() {
 	$level = $_REQUEST['level'];
 	$key = $_REQUEST['key'];
 
+	$xys = get_posts("type=level&current=" & $level );
 	$lvl = get_post($level);
 	$paraphernalia = get_field_objects($level);
 	$r1 = explode("; ", $paraphernalia['route_1']['value']);

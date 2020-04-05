@@ -164,3 +164,15 @@
 .panel-opened {
 	left: 0;
 }
+#gtm {
+	display:none;visibility:hidden
+}
+#googleSignIn {
+	position: absolute;
+	bottom: 3px;
+	left: 3px;
+	padding: 5px 3px 1px 6px;
+	background: #fff;
+	border: 1px solid #eee;
+	box-shadow: 1px 1px 1px #ddd;
+}

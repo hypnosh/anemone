@@ -3,6 +3,7 @@
 */
 
 $( function() {
+
 	// read localStorage to figure out which level we are at
 	// send out message in a bottle to get the level's deets
 	// render the level
@@ -64,7 +65,7 @@ $( function() {
 	}; // o dummy
 	
 	jQuery.ajax({
-		url: "http://recaptured.in/puzz/wp-json/wp/v2/r3d4?level=" + level,
+		url: "https://www.recaptured.in/puzz/wp-json/wp/v2/r3d4?level=" + level,
 		success: function(result) {
 			
 			o = result;
@@ -74,6 +75,10 @@ $( function() {
 			if (current > 9999) {
 				$("#levelno").addClass('levelnolarge');
 			}
+			var imgurl = o.img;
+			imgurlx = imgurl.split(":");
+			o.img = "https:" + imgurlx[1]; // make the protocol https
+			
 			$(".arena").css('backgroundImage', 'url(' + o.img + ')');
 			document.title = "Anomene - " + o.title;
 			var user = 0;
@@ -87,7 +92,7 @@ $( function() {
 				var myanswer = $("#answeranswer").val().toLowerCase();
 				if (myanswer == o.answer) {
 					// success! move ahead!
-					// send ga event with level number & answer
+					// **** send ga event with level number & answer
 					if (debug == 0) {
 						localStorage.anemone_level = o.next;
 					}
@@ -100,7 +105,7 @@ $( function() {
 						response = "Wrong. Try again";
 					}
 					oneByOne($("#answeranswer"), response, 0);
-					// send ga event with level number & myanswer
+					// **** send ga event with level number & myanswer
 				}
 			}); // .answerzone submit
 			
@@ -118,6 +123,7 @@ $( function() {
 			var cluecounter = 0;
 
 			$("#clueModal").on('show.bs.modal', function(event) {
+
 				var btn = $(event.relatedTarget);
 				var whichClue = btn.data("name");
 				var objj = o[whichClue];
@@ -139,6 +145,7 @@ $( function() {
 				btn.find('i').tooltip('dispose');
 				btn.css('opacity', .6).css('color', "#848C45").attr('disabled', "true").html("<i class='glyphicon glyphicon-remove' data-toggle='tooltip' data-placement='top'></i>");
 				btn.find('i').attr('title', "You have already used up this clue!").tooltip();
+				// **** send ga event
 				cluecounter++;
 			}); // #clueModal show
 
@@ -192,19 +199,26 @@ function onSignIn(googleUser) {
 	var profile = googleUser.getBasicProfile();
 	var id = profile.getId();
 	console.log('ID: ' + id); // Do not send to your backend! Use an ID token instead.
-	console.log('Name: ' + profile.getName());
-	console.log('Image URL: ' + profile.getImageUrl());
-	console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+	console.log('Name: ' + profile.getName() + " (Not storing it. Don't worry)");
+	console.log('Image URL: ' + profile.getImageUrl()  + " (Not storing it. Don't worry)");
+	console.log('Email: ' + profile.getEmail()  + " (Not storing it. Don't worry)"); // This is null if the 'email' scope is not present.
 	localStorage.anemone_userid = id;
+
+	// **** send ga event
+
 } // onSignIn - google
 
 function signOut() {
 	var auth2 = gapi.auth2.getAuthInstance();
 	auth2.signOut().then(function () {
 		console.log('User signed out.');
+		// **** send ga event
 	});
 } // signOut - google
 
 function toggleNav() {
 
 } // toggleNav - hamburger menu
+
+
+// ga('send', 'event', [eventCategory], [eventAction], [eventLabel], [eventValue], [fieldsObject]);

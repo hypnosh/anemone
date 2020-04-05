@@ -67,9 +67,10 @@ $( function() {
 	jQuery.ajax({
 		url: "https://www.recaptured.in/puzz/wp-json/wp/v2/r3d4?level=" + level,
 		success: function(result) {
-			
 			o = result;
 			var current = o.current;
+			// **** send ga event - level loaded - send current
+			gaEvent('Level', 'load', 'number', current);
 
 			$("#levelno").text(current);
 			if (current > 9999) {
@@ -92,26 +93,27 @@ $( function() {
 				var myanswer = $("#answeranswer").val().toLowerCase();
 				if (myanswer == o.answer) {
 					// success! move ahead!
-					// **** send ga event with level number & answer
+					// **** send ga event with level number & answer - ??
 					if (debug == 0) {
 						localStorage.anemone_level = o.next;
 					}
 					// reload page
-					window.reload();
+					location.reload();
 				} else {
 					var routes = o.routes;
 					var response = routes[myanswer];
 					if (response == undefined) {
 						response = "Wrong. Try again";
 					}
-					oneByOne($("#answeranswer"), response, 0);
 					// **** send ga event with level number & myanswer
+					gaEvent('Answer', 'input', myanswer);
+					oneByOne($("#answeranswer"), response, 0);
 				}
 			}); // .answerzone submit
 			
 			var hint5 = o["source-clue"];
 			$("#dlkjasd09812333").text("<!--" + hint5 + "-->");
-			// if mobile, then put hint5 on the page, not in source
+			// if mobile, then put hint5 on the page, not in source -- how??
 			
 			for (var i = 4; i >= 1; i--) {
 				var lft = window.innerWidth / 2 + (i - 2.5) * 80 - 35;
@@ -145,7 +147,8 @@ $( function() {
 				btn.find('i').tooltip('dispose');
 				btn.css('opacity', .6).css('color', "#848C45").attr('disabled', "true").html("<i class='glyphicon glyphicon-remove' data-toggle='tooltip' data-placement='top'></i>");
 				btn.find('i').attr('title', "You have already used up this clue!").tooltip();
-				// **** send ga event
+				// **** send ga event - cluecounter, objjcluenumber
+				gaEvent('Modal', 'access', 'ClueForLevel-' + current, objjcluenumber);
 				cluecounter++;
 			}); // #clueModal show
 
@@ -158,10 +161,24 @@ $( function() {
 					}
 				}
 			}); // #clueModal hidden
-		}
+		} // ajax success
 	}); // fetching the level
 
-	
+	$("#question").on('click', function() {
+		gaEvent('Question', 'click', 'clicked');
+	}); // question click
+	$("#levelno").on('click', function() {
+		gaEvent('LevelNumber', 'click', 'clicked');
+	}); // levelno click
+	$("#arena").on('click', function() {
+		gaEvent('LevelImage', 'click', 'clicked');
+	}); // arena click
+	$("#question").on('hover', function() {
+		gaEvent('Question', 'hover', 'hovered');
+	}); // question hover
+	$("#levelno").on('hover', function() {
+		gaEvent('LevelNumber', 'hover', 'hovered');
+	}); // levelno hover
 }); // $
 
 var oneByOneVar;
@@ -205,6 +222,7 @@ function onSignIn(googleUser) {
 	localStorage.anemone_userid = id;
 
 	// **** send ga event
+	gaEvent('SignIn', 'done', 'user', id);
 
 } // onSignIn - google
 
@@ -213,6 +231,7 @@ function signOut() {
 	auth2.signOut().then(function () {
 		console.log('User signed out.');
 		// **** send ga event
+		gaEvent('SignIn', 'done', 'signedout');
 	});
 } // signOut - google
 
@@ -220,5 +239,12 @@ function toggleNav() {
 
 } // toggleNav - hamburger menu
 
-
-// ga('send', 'event', [eventCategory], [eventAction], [eventLabel], [eventValue], [fieldsObject]);
+function gaEvent(categoryOfEvent, actionOfEvent, labelOfEvent, valueOfEvent) {
+	ga('send', {
+		hitType: 'event',
+		eventCategory: categoryOfEvent,
+		eventAction: actionOfEvent,
+		eventLabel: labelOfEvent,
+		eventValue: valueOfEvent
+	});
+} // gaEvent

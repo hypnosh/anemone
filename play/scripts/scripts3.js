@@ -27,6 +27,10 @@ $( function() {
 	if (localStorage.anemone_level == undefined) {
 		localStorage.anemone_level = 17;
 	}
+	if (localStorage.anemone_userid !== undefined) {
+		$(".g-signin2").hide();
+		$(".g-signout").show();
+	}
 	/* debug section */
 	var hashh = window.location.hash;
 	if (hashh.split("=")[0] == "#debug") {
@@ -35,9 +39,7 @@ $( function() {
 	} else {
 		var level = localStorage.anemone_level;
 		var debug = 0;
-	}
-		console.log(level);
-	
+	}	
 	$("#hamburger").click( function() {
 		$("#hamburger-menu").removeClass("panel-closed").addClass("panel-opened");
 	}); // #hamburger.click
@@ -164,6 +166,10 @@ $( function() {
 		} // ajax success
 	}); // fetching the level
 
+	$(".g-signout").on('click', function() {
+		signOut();
+	}); //  g-signout click
+
 	$("#question").on('click', function() {
 		gaEvent('Question', 'click', 'clicked');
 	}); // question click
@@ -223,27 +229,31 @@ function onSignIn(googleUser) {
 
 	// **** send ga event
 	gaEvent('SignIn', 'done', 'user', id);
-
+	$(".g-signin2").hide();
+	$(".g-signout").show();
 } // onSignIn - google
 
 function signOut() {
 	var auth2 = gapi.auth2.getAuthInstance();
 	auth2.signOut().then(function () {
 		console.log('User signed out.');
+		localStorage.removeItem('anemone_userid');
 		// **** send ga event
 		gaEvent('SignIn', 'done', 'signedout');
+		$(".g-signin2").show();
+		$(".g-signout").hide();
 	});
 } // signOut - google
 
-function toggleNav() {
+// function toggleNav() {
 
-} // toggleNav - hamburger menu
+// } // toggleNav - hamburger menu
 
 function gaEvent(categoryOfEvent, actionOfEvent, labelOfEvent, valueOfEvent) {
 	ga('send', {
 		hitType: 'event',
 		eventCategory: categoryOfEvent,
-		eventAction: actionOfEvent,
+		eventAction: labelOfEvent,
 		eventLabel: labelOfEvent,
 		eventValue: valueOfEvent
 	});

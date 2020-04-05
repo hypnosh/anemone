@@ -3,27 +3,18 @@
 <head>
 	<meta charset="utf-8"/>
 	
-	<meta http-equiv="Content-Security-Policy" content="style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://*.bootstrapcdn.com https://*.google.com https://fonts.googleapis.com https://fonts.gstatic.com https://*.googletagmanager.com; connect-src https://*.recaptured.in https://*.google-analytics.com; script-src 'self' 'nonce-12837876fdba' https://*.jquery.com https://cdnjs.cloudflare.com https://*.bootstrapcdn.com https://*.google.com https://fonts.googleapis.com https://fonts.gstatic.com https://*.googletagmanager.com; object-src 'none'">
+	<meta http-equiv="Content-Security-Policy" content="style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://*.bootstrapcdn.com https://*.google.com https://fonts.googleapis.com https://fonts.gstatic.com https://*.googletagmanager.com; connect-src https://*.recaptured.in https://*.google-analytics.com; script-src 'self' 'nonce-12837876fdba' https://*.jquery.com https://cdnjs.cloudflare.com https://*.bootstrapcdn.com https://*.google.com https://fonts.googleapis.com https://fonts.gstatic.com https://*.googletagmanager.com https://*.google-analytics.com; object-src 'none'">
 
-	<!-- GTM -->
-	<!-- <script type="text/javascript" nonce="12837876fdba">
-		(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-		})(window,document,'script','dataLayer','GTM-K86DNQT');
-	</script> -->
-	<!-- /GTM -->
-
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-5GPV8J22GM"></script>
+	
+	<!-- Google Analytics -->
 	<script nonce="12837876fdba">
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
-
-	  gtag('config', 'G-5GPV8J22GM');
+		window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+		ga('create', 'UA-3628190-18', 'auto');
+		ga('send', 'pageview');
 	</script>
+	<script async src='https://www.google-analytics.com/analytics.js'></script>
+	<!-- End Google Analytics -->
+
 	<title>Anomene</title>
 	<meta name="keywords" content="puzzle, online, klueless, IIM Indore, recaptured, Amit Sharma">
 	<meta name="description" content="Let's play!">
@@ -38,8 +29,11 @@
 	
 	<link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-	<script src="scripts/scripts1.js"></script>
-	<link rel="stylesheet" href="styles/style1.css" />
+	<script src="scripts/scripts3.js"></script>
+	<link rel="stylesheet" href="styles/style2.css" />
+	<link rel="shortcut icon" href="favicons/favicon.ico" />
+	<link rel="icon" href="favicons/favicon.ico" />
+	<link rel="apple-touch-icon" href="favicons/apple-touch-icon.png" />
 </head>
 <body>
 	<!-- Google Tag Manager (noscript) -->
@@ -118,7 +112,8 @@
 		</div>
 	</div> <!-- finalModal -->
 	<div id="googleSignIn">
-		<div class="g-signin2" data-onsuccess="onSignIn"></div>		
+		<div class="g-signin2" data-onsuccess="onSignIn"></div>
+		<a class="g-signout" href="#">Google Sign out</a>
 	</div> <!-- #googleSignIn -->
 	<div id="attributions" class="hidden">
 		Icons made by <a href="https://www.flaticon.com/authors/vectors-market" title="Vectors Market">Vectors Market</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>

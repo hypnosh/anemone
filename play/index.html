@@ -15,7 +15,7 @@
 	<script async src='https://www.google-analytics.com/analytics.js'></script>
 	<!-- End Google Analytics -->
 
-	<title>Anomene</title>
+	<title>Anomene - Loading...</title>
 	<meta name="keywords" content="puzzle, online, klueless, IIM Indore, recaptured, Amit Sharma">
 	<meta name="description" content="Let's play!">
 	<meta name="robots" content="index, nofollow">
@@ -29,8 +29,8 @@
 	
 	<link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-	<script src="scripts/scripts3.js"></script>
-	<link rel="stylesheet" href="styles/style2.css" />
+	<script src="scripts/scripts5.js"></script>
+	<link rel="stylesheet" href="styles/style3.css" />
 	<link rel="shortcut icon" href="favicons/favicon.ico" />
 	<link rel="icon" href="favicons/favicon.ico" />
 	<link rel="apple-touch-icon" href="favicons/apple-touch-icon.png" />
@@ -40,40 +40,57 @@
 	<!-- <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K86DNQT"
 	height="0" width="0" id="gtm"></iframe></noscript> -->
 	<!-- End Google Tag Manager (noscript) -->
+	<div id="loaded" class="hidden">
+		<div class="container-fluid">
+		
+		</div><!-- .container-fluid -->
+		<div id="dlkjasd09clue812333"></div>
+		<div class="arena" id="arena"></div>
 
-	<div class="container-fluid">
-	
-	</div><!-- .container-fluid -->
-	<div id="dlkjasd09clue812333"></div>
-	<div class="arena" id="arena"></div>
 
-
-	<!-- Level No -->
-	<div class="levelno" id="levelno"></div>
-	<div id="hamburger"><a class="glyphicon glyphicon-menu-hamburger" class=""></a></div>
-	<!-- Answer zone -->
-	<form class="answerzone" id="answer">
-		<p class="question" id="question"></p>
-		<input type="text" class="answerme" placeholder=" " id="answeranswer" name="answer">
-		<button type="submit" class="answersubmit">
-			<i class="glyphicon glyphicon-chevron-right"></i>
-		</button>
-	</form> <!-- #answer.answerzone -->
-	<!-- Clue buttons -->
-	<div class="cluezone">
-		<button data-toggle="modal" data-target="#clueModal" data-name="clue-1" data-clue="1" class="clue-1 clue hidden">
-			<i data-toggle="tooltip" data-placement="top" title="Tap for a clue" class="glyphicon glyphicon-asterisk"></i>
-		</button>
-		<button data-toggle="modal" data-target="#clueModal" data-name="clue-2" data-clue="2" class="clue-2 clue hidden">
-			<i data-toggle="tooltip" data-placement="top" title="Tap for a clue" class="glyphicon glyphicon-asterisk"></i>
-		</button>
-		<button data-toggle="modal" data-target="#clueModal" data-name="clue-3" data-clue="3" class="clue-3 clue hidden">
-			<i data-toggle="tooltip" data-placement="top" title="Tap for a clue" class="glyphicon glyphicon-asterisk"></i>
-		</button>
-		<button data-toggle="modal" data-target="#clueModal" data-name="clue-4" data-clue="4" class="clue-4 clue hidden">
-			<i data-toggle="tooltip" data-placement="top" title="Tap for a clue" class="glyphicon glyphicon-asterisk"></i>
-		</button>
-	</div> <!-- .cluezone -->
+		<!-- Level No -->
+		<div class="levelno" id="levelno"></div>
+		<div id="hamburger"><a class="glyphicon glyphicon-menu-hamburger" class=""></a></div>
+		<!-- Answer zone -->
+		<form class="answerzone" id="answer">
+			<p class="question" id="question"></p>
+			<input type="text" class="answerme" placeholder=" " id="answeranswer" name="answer">
+			<button type="submit" class="answersubmit">
+				<i class="glyphicon glyphicon-chevron-right"></i>
+			</button>
+		</form> <!-- #answer.answerzone -->
+		<!-- Clue buttons -->
+		<div class="cluezone">
+			<button data-toggle="modal" data-target="#clueModal" data-name="clue-1" data-clue="1" class="clue-1 clue hidden">
+				<i data-toggle="tooltip" data-placement="top" title="Tap for a clue" class="glyphicon glyphicon-asterisk"></i>
+			</button>
+			<button data-toggle="modal" data-target="#clueModal" data-name="clue-2" data-clue="2" class="clue-2 clue hidden">
+				<i data-toggle="tooltip" data-placement="top" title="Tap for a clue" class="glyphicon glyphicon-asterisk"></i>
+			</button>
+			<button data-toggle="modal" data-target="#clueModal" data-name="clue-3" data-clue="3" class="clue-3 clue hidden">
+				<i data-toggle="tooltip" data-placement="top" title="Tap for a clue" class="glyphicon glyphicon-asterisk"></i>
+			</button>
+			<button data-toggle="modal" data-target="#clueModal" data-name="clue-4" data-clue="4" class="clue-4 clue hidden">
+				<i data-toggle="tooltip" data-placement="top" title="Tap for a clue" class="glyphicon glyphicon-asterisk"></i>
+			</button>
+		</div> <!-- .cluezone -->
+	</div> <!-- #loaded -->
+	<div id="finished" class="hidden">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm"></div>
+				<div class="col-sm" id="middle-column">
+					<h1>Wow! You're good!</h1>
+					<p>You've reached the end of this game's beta. Do let me know on <a href="mailto:amitksharma+anomene@gmail.com">ami...harma@gmail.com</a> how you liked the game, what didn't go well, what should be added, what should be improved upon, and if you would want to tell your friends about Anomene.</p>
+					<p>You can <a href="https://www.anomene.com/">join the newsletter</a> to stay updated about what is happening with Anomene and when you can expect a full release.</p>
+					<p>Thanks a lot for playing!</p>
+					<p>Amit Sharma<br/>
+					<a href="https://www.recaptured.in/">Blog</a> - <a href="https://twitter.com/hypnosh">@hypnosh</a></p>
+				</div> <!-- middle column -->
+				<div class="col-sm"></div>
+			</div>
+		</div>
+	</div> <!-- #finished -->
 
 	<!-- clueModal -->
 	<div class="modal" id="clueModal" tabindex="-1" role="dialog" aria-labelledby="clueModalLabel" aria-hidden="true">
@@ -113,11 +130,25 @@
 	</div> <!-- finalModal -->
 	<div id="googleSignIn">
 		<div class="g-signin2" data-onsuccess="onSignIn"></div>
-		<a class="g-signout" href="#">Google Sign out</a>
+		<a class="g-signout hidden" href="#">Google Sign out</a>
 	</div> <!-- #googleSignIn -->
 	<div id="attributions" class="hidden">
 		Icons made by <a href="https://www.flaticon.com/authors/vectors-market" title="Vectors Market">Vectors Market</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 	</div>
+	<div id="loading">
+		<?xml version="1.0" encoding="utf-8"?>
+		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%; display: block; shape-rendering: auto;" width="134px" height="134px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+		<circle cx="50" cy="50" r="0" fill="none" stroke="#d63635" stroke-width="2">
+		  <animate attributeName="r" repeatCount="indefinite" dur="1s" values="0;40" keyTimes="0;1" keySplines="0 0.2 0.8 1" calcMode="spline" begin="-0.5s"></animate>
+		  <animate attributeName="opacity" repeatCount="indefinite" dur="1s" values="1;0" keyTimes="0;1" keySplines="0.2 0 0.8 1" calcMode="spline" begin="-0.5s"></animate>
+		</circle>
+		<circle cx="50" cy="50" r="0" fill="none" stroke="#00569d" stroke-width="2">
+		  <animate attributeName="r" repeatCount="indefinite" dur="1s" values="0;40" keyTimes="0;1" keySplines="0 0.2 0.8 1" calcMode="spline"></animate>
+		  <animate attributeName="opacity" repeatCount="indefinite" dur="1s" values="1;0" keyTimes="0;1" keySplines="0.2 0 0.8 1" calcMode="spline"></animate>
+		</circle>
+		<p id="loading-msg">Loading</p>
+		<!-- [ldio] generated by https://loading.io/ --></svg>
+	</div> <!-- #loading -->
 </body>
 <script src="https://apis.google.com/js/platform.js" async defer></script>
 </html>

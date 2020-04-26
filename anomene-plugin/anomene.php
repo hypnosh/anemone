@@ -11,6 +11,23 @@ add_action("rest_api_init", function() {
 	);
 }); // rest_api_init
 
+add_action("rest_api_init", function() {
+	register_rest_route("wp/v2", '/validate', array(
+			'methods'	=> 'GET',
+			'callback'	=> 'anomene_validate',
+		)
+	);
+});
+
+function anomene_validate() {
+	$key = $_REQUEST['key'];
+	if ($key == "the bard") {
+		return "Ok";
+	} else {
+		return "Stop!";
+	}
+} // anomene_validate
+
 function anomene_get_level() {
 	$level = $_REQUEST['level'];
 	$key = $_REQUEST['key'];
@@ -44,9 +61,11 @@ function anomene_get_level() {
 	if ($paraphernalia['clue_3']['value'] == null) {
 		$clue3 = null;	
 	} else {
+		$value3 = $paraphernalia['clue_3']['value'];
+		$value3 = (is_numeric($value3)) ? (wp_get_attachment_image_src($value3)[0]) : ($value3);
 		$clue3 = array(
 					"type"	=> $paraphernalia['clue_3']['type'],
-					"value"	=> $paraphernalia['clue_3']['value'],
+					"value"	=> $value3,
 				);
 	}
 	if ($paraphernalia['clue_4']['value'] == null) {
@@ -58,7 +77,9 @@ function anomene_get_level() {
 				);
 	}	
 	$source_clue = "source";
-	$img = get_the_post_thumbnail_url($level, 'full');
+	$img[0] = get_the_post_thumbnail_url($level, 'full');
+	$img[1] = get_the_post_thumbnail_url($level, 'large');
+	$img[2] = get_the_post_thumbnail_url($level, 'medium');
 
 	$out = array(
 		"current"	=> $paraphernalia['current']['value'],
@@ -76,7 +97,7 @@ function anomene_get_level() {
  	);
 
 	return $out;
-} // main
+} // anomene_get_level
 
 // var o = {
 // 		"title": "In the shade",

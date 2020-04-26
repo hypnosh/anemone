@@ -1,6 +1,3 @@
-.hidden {
-	display: none;
-}
 .arena {
 	position: absolute;
 	top: 0;
@@ -16,6 +13,21 @@
 	top: -200px;
 	display: none;
 }
+#loading {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -67px; width: 134px;
+	margin-top: -90px; height: 134px;
+	background-color: rgba(255, 255, 255, .3);
+	/*border: 3px solid #eee;*/
+	/*box-shadow: 1px 1px 1px #ddd;*/
+	border-radius: 67px;
+}
+	#loading-msg {
+		font-size: 12pt;
+		text-align: center;
+	}
 .levelno {
 	position: absolute;
 	top: 15px;
@@ -53,7 +65,7 @@
 
 .answerme {
 	border: none;
-	font-size: 30pt;
+	font-size: 20pt;
 	width: 80%;
 	/*margin-left: -60px;*/
 	background: transparent;
@@ -117,6 +129,8 @@
 .clue-embedded {
 	width: 100%;
 	height: 200px;
+	background-repeat: no-repeat;
+	background-size: contain;
 }
 /*.clue-4 {
 	color: #BCBF5A;
@@ -179,8 +193,27 @@
 .g-signout {
 	display: block;
 	font-size: 10pt;
-	display: none;
 }
+#middle-column {
+	padding-top: 70px;
+}
+	#middle-column h1 {
+		font-weight: bold;
+	}
+	#middle-column p {
+		font-size: 13pt;
+		margin-bottom: 1em;
+	}
 #attributions {
 	display: none;
+}
+.hidden {
+	display: none;
+}
+
+.modal-body {
+	font-size: 1.5rem;
+}
+.modal-content .btn {
+	font-size: 1.5rem;
 }

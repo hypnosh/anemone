@@ -4,6 +4,7 @@
 
 $( function() {
 
+	// YTBD: read localStorage to figure out if user is logged in. if not, force login
 	// read localStorage to figure out which level we are at
 	// send out message in a bottle to get the level's deets
 	// render the level
@@ -23,6 +24,7 @@ $( function() {
 		"You don't say!",
 		"Cool"
 	];
+
 	$('[data-toggle="tooltip"]').tooltip();
 	if (localStorage.anemone_level == undefined) {
 		localStorage.anemone_level = 17;
@@ -33,19 +35,19 @@ $( function() {
 	}
 	/* debug section */
 	var hashh = window.location.hash;
-	if (hashh.split("=")[0] == "#debug") {
-		var level = hashh.split("=")[1];
-		var debug = 1;
+	var hashhed = hashh.split("=");
+	if (hashhed[0] == "#debug") {
+		if (hashhed[1] == "f") {
+			$("#loading").addClass("hidden");
+			$("#finished").removeClass("hidden");
+		} else {
+			var level = hashhed[1];
+			var debug = 1;
+		}
 	} else {
 		var level = localStorage.anemone_level;
 		var debug = 0;
-	}	
-	$("#hamburger").click( function() {
-		$("#hamburger-menu").removeClass("panel-closed").addClass("panel-opened");
-	}); // #hamburger.click
-	$(".menu-close").click( function() {
-		$("#hamburger-menu").addClass("panel-closed").removeClass("panel-opened");
-	}); // .menu-close.click
+	}
 
 	// fetch level details based on levelno
 
@@ -60,7 +62,7 @@ $( function() {
 		},
 		"img": "http://recaptured.in/puzz/wp-content/uploads/2019/08/Screen-Shot-2019-08-01-at-9.45.33-PM.png",
 		"clue-1": {"type": "text", "value": "yet another hello world"},
-		"clue-2": {"type": "url", "value": "http://recaptured.in/puzz/wp-content/uploads/2019/08/Screen-Shot-2019-08-01-at-9.45.33-PM.png"},
+		"clue-2": {"type": "text", "value": "whattay!"},
 		"clue-3": {"type": "image", "value": "http://recaptured.in/puzz/wp-content/uploads/2019/08/Screen-Shot-2019-08-01-at-9.45.33-PM.png", "width": 300, "height": 300 },
 		"clue-4": {"type": "text", "value": "hello world"},
 		"source-clue": "Hell here it is!"
@@ -69,6 +71,7 @@ $( function() {
 	jQuery.ajax({
 		url: "https://www.recaptured.in/puzz/wp-json/wp/v2/r3d4?level=" + level,
 		success: function(result) {
+
 			o = result;
 			var current = o.current;
 			// **** send ga event - level loaded - send current
@@ -79,15 +82,24 @@ $( function() {
 				$("#levelno").addClass('levelnolarge');
 			}
 			var imgurl = o.img;
-			imgurlx = imgurl.split(":");
-			o.img = "https:" + imgurlx[1]; // make the protocol https
-			
-			$(".arena").css('backgroundImage', 'url(' + o.img + ')');
+			if (typeof imgurl == "object") {
+				for (var i = imgurl.length - 1; i >= 0; i--) {
+					imgurlx = imgurl[i].split(":");
+					imgurl[i] = "url(https:" + imgurlx[1] + ")"; // make the protocol https
+				}
+				imgurl = imgurl.join(", ");
+			}
+			console.log(imgurl);
+			$(".arena").css('backgroundImage', imgurl);
 			document.title = "Anomene - " + o.title;
 			var user = 0;
 			// window.history.pushState({'page': current, 'user': user}, "", o.title);
 			$("#question").html(o.question);
-			$("#answeranswer").focus();
+
+			$("#loading").addClass("hidden"); // remove loader
+			$("#loaded").removeClass("hidden"); // show level
+
+			$("#answeranswer").val('').focus();
 
 			// when the player submits an answer
 			$("#answer").submit(function(e) {
@@ -97,10 +109,19 @@ $( function() {
 					// success! move ahead!
 					// **** send ga event with level number & answer - ??
 					if (debug == 0) {
-						localStorage.anemone_level = o.next;
+						if (o.next !== false) {
+							localStorage.anemone_level = o.next;
+							$("#loading").removeClass("hidden"); // show loader
+							// reload page
+							location.reload();
+						} else {
+							$("#loaded").fadeOut('fast', function() {
+								$("#loaded").addClass("hidden");
+								$("#finished").removeClass("hidden");
+							});
+						}
 					}
-					// reload page
-					location.reload();
+
 				} else {
 					var routes = o.routes;
 					var response = routes[myanswer];
@@ -221,16 +242,17 @@ function oneByOne(theObject, theText, oneByOneCounter) {
 function onSignIn(googleUser) {
 	var profile = googleUser.getBasicProfile();
 	var id = profile.getId();
-	console.log('ID: ' + id); // Do not send to your backend! Use an ID token instead.
-	console.log('Name: ' + profile.getName() + " (Not storing it. Don't worry)");
-	console.log('Image URL: ' + profile.getImageUrl()  + " (Not storing it. Don't worry)");
-	console.log('Email: ' + profile.getEmail()  + " (Not storing it. Don't worry)"); // This is null if the 'email' scope is not present.
+	// console.log('ID: ' + id); // Do not send to your backend! Use an ID token instead.
+	// console.log('Name: ' + profile.getName() + " (Not storing it. Don't worry)");
+	// console.log('Image URL: ' + profile.getImageUrl()  + " (Not storing it. Don't worry)");
+	// console.log('Email: ' + profile.getEmail()  + " (Not storing it. Don't worry)"); // This is null if the 'email' scope is not present.
 	localStorage.anemone_userid = id;
+	console.log("Fetched");
 
 	// **** send ga event
 	gaEvent('SignIn', 'done', 'user', id);
-	$(".g-signin2").hide();
-	$(".g-signout").show();
+	$(".g-signin2").addClass("hidden");
+	$(".g-signout").removeClass("hidden");
 } // onSignIn - google
 
 function signOut() {
@@ -240,14 +262,33 @@ function signOut() {
 		localStorage.removeItem('anemone_userid');
 		// **** send ga event
 		gaEvent('SignIn', 'done', 'signedout');
-		$(".g-signin2").show();
-		$(".g-signout").hide();
+		$(".g-signin2").removeClass("hidden");
+		$(".g-signout").addClass("hidden");
 	});
 } // signOut - google
 
-// function toggleNav() {
 
-// } // toggleNav - hamburger menu
+function gameReset() {
+	// some kind of validation?
+	var x = prompt("Hark! Who goes there?");
+	console.log(1);
+	jQuery.ajax({
+		url: "https://www.recaptured.in/puzz/wp-json/wp/v2/validate?key=" + x,
+		success: function(result) {
+			console.log(result);
+			if (result == "Ok") {
+				localStorage.removeItem("anemone_userid");
+				localStorage.removeItem("anemone_level");
+				return ("Reset!");
+			}  else {
+				return ("Not allowed!");
+			}
+			console.log(2);
+		}
+	});
+	console.log(3);
+	return false;
+} // gameReset
 
 function gaEvent(categoryOfEvent, actionOfEvent, labelOfEvent, valueOfEvent) {
 	ga('send', {

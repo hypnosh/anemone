@@ -53,6 +53,7 @@ function anomene_player_token() {
 				'post_type'		=> 'player',
 				'post_status'	=> 'publish',
 			);
+		$fname = substr($name, 0, strpos($name, " "));
 		$player_id = wp_insert_post($args);
 		add_post_meta($player_id, 'token', $token);
 		add_post_meta($player_id, 'email', $email);
@@ -64,6 +65,8 @@ function anomene_player_token() {
 			// success
 			$return_array = array(
 					'id'	=> $player_id,
+					'fname'	=> $fname,
+					'level'	=> intval($level),
 				);
 			return $return_array;
 		} else {
@@ -72,10 +75,13 @@ function anomene_player_token() {
 	} else {
 		// return last_level 
 		$player_id = $player[0]->ID;
-		
+		$name = get_the_title($player_id);
 		$last_level = get_post_meta($player_id, 'last_level', true);
+		$fname = substr($name, 0, strpos($name, " "));
 		$return_array = array(
-				'level'		=> $last_level,
+				'id'		=> $player_id,
+				'fname'		=> $fname,
+				'level'		=> intval($last_level),
 			);
 		return $return_array;
 	}
@@ -85,22 +91,12 @@ function anomene_player_levelupdate() {
 	// user's level update
 	// data coming in
 	//		google token, level no, timestamp
-	$token = $_REQUEST['token'];
+	$player_id = $_REQUEST['id'];
 	$level = $_REQUEST['level'];
 	$timestamp = time();
 
-	$args = array(
-			'post_type'		=> 'player',
-			'meta_key'		=> 'token',
-			'meta_value'	=> $token,
-		);
-	$player = get_posts($args);
-	// in the player table. Store custom fields
-	if (!empty($player)) {
-		$player_id = $player[0]->ID;
-		add_post_meta($player_id, 'level_' . $level, $timestamp);
-		update_post_meta($player_id, 'last_level', $level);
-	}
+	add_post_meta($player_id, 'level_' . $level, $timestamp);
+	update_post_meta($player_id, 'last_level', $level);
 	return 1;
 } // anomene_player_levelupdate
 

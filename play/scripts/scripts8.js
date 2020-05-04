@@ -2,12 +2,13 @@
 	Author: @hypnosh
 */
 
+const ajaxUrl = "https://www.recaptured.in/puzz/";
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 $( function() {
-	var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 	// YTBD: read localStorage to figure out if user is logged in. if not, force login
 	// read localStorage to figure out which level we are at
 	// store user data (token, email, level reached at the server)
-	
+
 	// send out message in a bottle to get the level's deets
 	// render the level
 
@@ -71,7 +72,7 @@ $( function() {
 	}; // o dummy
 	
 	jQuery.ajax({
-		url: "https://www.recaptured.in/puzz/wp-json/wp/v2/r3d4?level=" + level,
+		url: ajaxUrl + "wp-json/wp/v2/r3d4?level=" + level,
 		success: function(result) {
 
 			o = result;
@@ -91,7 +92,7 @@ $( function() {
 				}
 				imgurl = imgurl.join(", ");
 			}
-			console.log(imgurl);
+			console.log({imgurl: imgurl});
 			$(".arena").css('backgroundImage', imgurl);
 			document.title = "Anomene - " + o.title;
 			var user = 0;
@@ -113,6 +114,13 @@ $( function() {
 					if (debug == 0) {
 						if (o.next !== false) {
 							localStorage.anemone_level = o.next;
+							// send a bottle to the server with new level data
+							jQuery.ajax({
+								url: ajaxUrl + "/player/levelupdate",
+								data: { id: localStorage.anemone_userid, level: o.next }
+							}).done(function(result) {
+								console.log({ levelupdate: result });
+							});
 							$("#loading").removeClass("hidden"); // show loader
 							// reload page
 							location.reload();
@@ -137,7 +145,7 @@ $( function() {
 			}); // .answerzone submit
 			
 			var hint5 = o["source-clue"];
-			console.log(hint5);
+			console.log({ source: hint5 });
 			if (isMobile) {
 				// mobile device
 				$("#dlkjasd09clue812333").html(hint5);
@@ -255,24 +263,51 @@ function onSignIn(googleUser) {
 	// console.log('Name: ' + profile.getName() + " (Not storing it. Don't worry)");
 	// console.log('Image URL: ' + profile.getImageUrl()  + " (Not storing it. Don't worry)");
 	// console.log('Email: ' + profile.getEmail()  + " (Not storing it. Don't worry)"); // This is null if the 'email' scope is not present.
-	localStorage.anemone_userid = id;
-	console.log("Fetched");
+	// localStorage.anemone_userid = id;
+	// token, name, email, device, level => id, level
+	var serverObject = {
+		'token'	: id,
+		'name'	: profile.getName(),
+		'device': navigator.userAgent,
+		'email'	: profile.getEmail(),
+		'level' : localStorage.anemone_level,
+	};
+	console.log({token: "Fetched"});
+	jQuery.ajax({
+		url: ajaxUrl + "wp-json/wp/v2/player/token",
+		data: serverObject,
+		method: "POST",
+	}).done(function(result) {
+			// console.log("result follows");
+			console.log(result);
+			var userID = result.id;
+			localStorage.anemone_userid = userID;
+			$("#playerName").text(result.fname);
+			var last_level = result.level;
+			if (last_level != localStorage.anemone_level) {
+				localStorage.anemone_level = last_level;
+			}
+			// **** send ga event
+			gaEvent('SignIn', 'done', 'user', id);
+			$(".g-signin2").addClass("hidden");
+			$(".g-signout").removeClass("hidden");
+			// console.log("token Server returned");
+	}).fail(function(result) {
+		console.log("server failed - player/token");
+	}); // player-token
+	
 
-	// **** send ga event
-	gaEvent('SignIn', 'done', 'user', id);
-	$(".g-signin2").addClass("hidden");
-	$(".g-signout").removeClass("hidden");
 } // onSignIn - google
 
 function signOut() {
 	var auth2 = gapi.auth2.getAuthInstance();
 	auth2.signOut().then(function () {
 		console.log('User signed out.');
+		$(".g-signin2").removeClass("hidden");
+		$(".g-signout").addClass("hidden");
 		localStorage.removeItem('anemone_userid');
 		// **** send ga event
 		gaEvent('SignIn', 'done', 'signedout');
-		$(".g-signin2").removeClass("hidden");
-		$(".g-signout").addClass("hidden");
 	});
 } // signOut - google
 
@@ -282,7 +317,7 @@ function gameReset() {
 	var x = prompt("Hark! Who goes there?");
 	console.log(1);
 	jQuery.ajax({
-		url: "https://www.recaptured.in/puzz/wp-json/wp/v2/validate?key=" + x,
+		url: ajaxUrl + "/wp-json/wp/v2/validate?key=" + x,
 		success: function(result) {
 			console.log(result);
 			if (result == "Ok") {

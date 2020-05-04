@@ -8,16 +8,101 @@ add_action("rest_api_init", function() {
 			'methods'	=> 'GET',
 			'callback'	=> 'anomene_get_level',
 		)
-	);
-}); // rest_api_init
-
-add_action("rest_api_init", function() {
+	); // r3d4
 	register_rest_route("wp/v2", '/validate', array(
 			'methods'	=> 'GET',
 			'callback'	=> 'anomene_validate',
 		)
-	);
-});
+	); // validate
+	register_rest_route("wp/v2", '/player/token', array(
+			'methods'	=> 'POST',
+			'callback'	=> 'anomene_player_token',
+		)
+	); // user
+	register_rest_route("wp/v2", '/player/levelupdate', array(
+			'methods'	=> 'GET',
+			'callback'	=> 'anomene_player_levelupdate',
+		)
+	); // user
+	
+}); // rest_api_init
+
+
+function anomene_player_token() {
+	// once user logs in
+	// data coming in
+	//		google token, email address, timestamp, device data?
+	$token = $_REQUEST['token'];
+	$name = $_REQUEST['name'];
+	$email = $_REQUEST['email'];
+	$timestamp = time();
+	$device = $_REQUEST['device'];
+	$level = $_REQUEST['level'];
+	// in the player table. Fetch or create
+
+	$args = array(
+			'post_type'		=> 'player',
+			'meta_key'		=> 'token',
+			'meta_value'	=> $token,
+		);
+	$player = get_posts($args);
+	if (empty($player)) {
+		$args = array(
+				'number_posts'	=> 1,
+				'post_title'	=> $name,
+				'post_type'		=> 'player',
+				'post_status'	=> 'publish',
+			);
+		$player_id = wp_insert_post($args);
+		add_post_meta($player_id, 'token', $token);
+		add_post_meta($player_id, 'email', $email);
+		add_post_meta($player_id, 'device', $device);
+		add_post_meta($player_id, 'last_level', $level);
+		add_post_meta($player_id, 'first_login_time', $timestamp);
+
+		if ($postid > 0) {
+			// success
+			$return_array = array(
+					'id'	=> $player_id,
+				);
+			return $return_array;
+		} else {
+			return "Error";
+		}
+	} else {
+		// return last_level 
+		$player_id = $player[0]->ID;
+		
+		$last_level = get_post_meta($player_id, 'last_level', true);
+		$return_array = array(
+				'level'		=> $last_level,
+			);
+		return $return_array;
+	}
+} // anomene_player_token
+
+function anomene_player_levelupdate() {
+	// user's level update
+	// data coming in
+	//		google token, level no, timestamp
+	$token = $_REQUEST['token'];
+	$level = $_REQUEST['level'];
+	$timestamp = time();
+
+	$args = array(
+			'post_type'		=> 'player',
+			'meta_key'		=> 'token',
+			'meta_value'	=> $token,
+		);
+	$player = get_posts($args);
+	// in the player table. Store custom fields
+	if (!empty($player)) {
+		$player_id = $player[0]->ID;
+		add_post_meta($player_id, 'level_' . $level, $timestamp);
+		update_post_meta($player_id, 'last_level', $level);
+	}
+	return 1;
+} // anomene_player_levelupdate
 
 function anomene_validate() {
 	$key = $_REQUEST['key'];
@@ -76,7 +161,7 @@ function anomene_get_level() {
 					"value"	=> $paraphernalia['clue_4']['value'],
 				);
 	}	
-	$source_clue = "source";
+	$source_clue = $paraphernalia["source_clue"]["value"];
 	$img[0] = get_the_post_thumbnail_url($level, 'full');
 	$img[1] = get_the_post_thumbnail_url($level, 'large');
 	$img[2] = get_the_post_thumbnail_url($level, 'medium');

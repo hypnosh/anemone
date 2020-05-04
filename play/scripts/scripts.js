@@ -3,9 +3,11 @@
 */
 
 $( function() {
-
+	var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 	// YTBD: read localStorage to figure out if user is logged in. if not, force login
 	// read localStorage to figure out which level we are at
+	// store user data (token, email, level reached at the server)
+	
 	// send out message in a bottle to get the level's deets
 	// render the level
 
@@ -135,8 +137,15 @@ $( function() {
 			}); // .answerzone submit
 			
 			var hint5 = o["source-clue"];
-			$("#dlkjasd09812333").text("<!--" + hint5 + "-->");
-			// if mobile, then put hint5 on the page, not in source -- how??
+			console.log(hint5);
+			if (isMobile) {
+				// mobile device
+				$("#dlkjasd09clue812333").html(hint5);
+				// set a listener to show this item on some action (shake?? :D)
+			} else {
+				// desktop
+				$("#dlkjasd09clue812333").html("<!--  " + hint5 + "  -->");
+			} // isMobile
 			
 			for (var i = 4; i >= 1; i--) {
 				var lft = window.innerWidth / 2 + (i - 2.5) * 80 - 35;
@@ -162,7 +171,7 @@ $( function() {
 				if (objjtype == "text") {
 					modal.find(".modal-body").text(objjvalue);
 				} else if (objjtype == "image") {
-					modal.find(".modal-body").html("<div class='clue-embedded' style='background-image: url(" + objjvalue +"); width: " + objj.width + "px; height:" + objj.height + "px;'>");
+					modal.find(".modal-body").html("<div class='clue-embedded' style='background-image: url(" + objjvalue +"), url(/play/images/pulse.svg); width: " + objj.width + "px; height:" + objj.height + "px;'>");
 				} else if (objjtype == "url") {
 					modal.find(".modal-body").html("<a target='_blank' href='" + objjvalue + "'>How about you try looking here?</a>");
 				}

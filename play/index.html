@@ -29,7 +29,7 @@
 	
 	<link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-	<script src="scripts/scripts8.js"></script>
+	<script src="scripts/script.js"></script>
 	<link rel="stylesheet" href="styles/style.css" />
 	<link rel="shortcut icon" href="favicons/favicon.ico" />
 	<link rel="icon" href="favicons/favicon.ico" />
@@ -37,16 +37,20 @@
 </head>
 <body>
 	<div id="loaded" class="hidden">
-		<div class="container-fluid">
-		
-		</div><!-- .container-fluid -->
 		<div id="dlkjasd09clue812333" clue="So you've come this far?"></div>
 		<div class="arena" id="arena"></div>
 
+		<div id="navbar" class="navbar">
+			<span class="levelno navbar-brand" id="levelno"></span>
+			<div class="g-signin2" data-onsuccess="onSignIn"></div>
+			<div class="g-signout hidden">
+				<span class="playerPic"></span> 
+				<span id="playerName"></span>
+				<a class="g-signoutlink" href="#">Sign out</a>
+			</div>
+		</div> <!-- #navbar -->
 
-		<!-- Level No -->
-		<div class="levelno" id="levelno"></div>
-		<div id="hamburger"><a class="glyphicon glyphicon-menu-hamburger" class=""></a></div>
+		<!-- <div id="hamburger"><a class="glyphicon glyphicon-menu-hamburger" class=""></a></div> -->
 		<!-- Answer zone -->
 		<form class="answerzone" id="answer">
 			<p class="question" id="question"></p>
@@ -124,10 +128,6 @@
 			</div>
 		</div>
 	</div> <!-- finalModal -->
-	<div id="googleSignIn">
-		<div class="g-signin2" data-onsuccess="onSignIn"></div>
-		<a class="g-signout hidden" href="#">Hi <span id="playerName"></span>!<br/> Google Sign out</a>
-	</div> <!-- #googleSignIn -->
 	<div id="attributions" class="hidden">
 		Icons made by <a href="https://www.flaticon.com/authors/vectors-market" title="Vectors Market">Vectors Market</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 	</div>

@@ -2,7 +2,7 @@
 	Author: @hypnosh
 */
 
-const ajaxUrl = "https://www.recaptured.in/puzz/";
+const ajaxUrl = "//www.recaptured.in/puzz/";
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 $( function() {
 	// YTBD: read localStorage to figure out if user is logged in. if not, force login
@@ -33,8 +33,8 @@ $( function() {
 		localStorage.anemone_level = 17;
 	}
 	if (localStorage.anemone_userid !== undefined) {
-		$(".g-signin2").hide();
-		$(".g-signout").show();
+		$(".g-signin2").addClass("hidden");
+		$(".g-signout").removeClass("hidden");
 	}
 	/* debug section */
 	var hashh = window.location.hash;
@@ -117,13 +117,14 @@ $( function() {
 							// send a bottle to the server with new level data
 							jQuery.ajax({
 								url: ajaxUrl + "/player/levelupdate",
+								method: 'POST',
 								data: { id: localStorage.anemone_userid, level: o.next }
 							}).done(function(result) {
 								console.log({ levelupdate: result });
+								// reload page
+								location.reload();
 							});
 							$("#loading").removeClass("hidden"); // show loader
-							// reload page
-							location.reload();
 						} else {
 							$("#loaded").fadeOut('fast', function() {
 								$("#loaded").addClass("hidden");
@@ -204,7 +205,7 @@ $( function() {
 		} // ajax success
 	}); // fetching the level
 
-	$(".g-signout").on('click', function() {
+	$(".g-signoutlink").on('click', function() {
 		signOut();
 	}); //  g-signout click
 
@@ -258,7 +259,7 @@ function oneByOne(theObject, theText, oneByOneCounter) {
 
 function onSignIn(googleUser) {
 	var profile = googleUser.getBasicProfile();
-	var id = profile.getId();
+	var token = profile.getId();
 	// console.log('ID: ' + id); // Do not send to your backend! Use an ID token instead.
 	// console.log('Name: ' + profile.getName() + " (Not storing it. Don't worry)");
 	// console.log('Image URL: ' + profile.getImageUrl()  + " (Not storing it. Don't worry)");
@@ -266,11 +267,12 @@ function onSignIn(googleUser) {
 	// localStorage.anemone_userid = id;
 	// token, name, email, device, level => id, level
 	var serverObject = {
-		'token'	: id,
-		'name'	: profile.getName(),
-		'device': navigator.userAgent,
-		'email'	: profile.getEmail(),
-		'level' : localStorage.anemone_level,
+		'token'			: token,
+		'name'			: profile.getName(),
+		'device'		: navigator.userAgent,
+		'email'			: profile.getEmail(),
+		'level' 		: localStorage.anemone_level,
+		'profilepic'	: profile.getImageUrl(),
 	};
 	console.log({token: "Fetched"});
 	jQuery.ajax({
@@ -282,13 +284,15 @@ function onSignIn(googleUser) {
 			console.log(result);
 			var userID = result.id;
 			localStorage.anemone_userid = userID;
-			$("#playerName").text(result.fname);
+			$("#playerName").text("Hi " + result.fname + "!");
+			$(".playerPic").css({ backgroundImage: "url(" + serverObject.profilepic +")", border: "none" });
 			var last_level = result.level;
+			last_level = (last_level == 0 ? 17 : last_level); // if undefined, then level 1
 			if (last_level != localStorage.anemone_level) {
 				localStorage.anemone_level = last_level;
 			}
 			// **** send ga event
-			gaEvent('SignIn', 'done', 'user', id);
+			gaEvent('SignIn', 'done', 'user', userID);
 			$(".g-signin2").addClass("hidden");
 			$(".g-signout").removeClass("hidden");
 			// console.log("token Server returned");
@@ -317,7 +321,9 @@ function gameReset() {
 	var x = prompt("Hark! Who goes there?");
 	console.log(1);
 	jQuery.ajax({
-		url: ajaxUrl + "/wp-json/wp/v2/validate?key=" + x,
+		url: ajaxUrl + "/wp-json/wp/v2/validate",
+		data: { key: x },
+		method: "POST",
 		success: function(result) {
 			console.log(result);
 			if (result == "Ok") {

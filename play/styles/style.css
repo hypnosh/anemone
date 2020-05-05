@@ -29,28 +29,29 @@
 		text-align: center;
 	}
 .levelno {
-	position: absolute;
-	top: 15px;
-	font-size: 10px;
-	left: 50%;
-	width: 30px;
-	height: 30px;
-	margin-left: -15px;
-	line-height: 30px;
-	border-radius: 35px;
+	/*position: absolute;*/
+	/*top: 0;*/
+	font-size: 20px;
+	/*left: 0;*/
+	width: 50px;
+	/*bottom: 0;*/
+	/*height: 30px;*/
+	/*margin-left: -15px;*/
+	line-height: 50px;
+	/*border-radius: 35px;*/
 	text-align: center;
 	background-color: #F25A38;
-	box-shadow: 1px 1px 2px #E24A28;
+	/*box-shadow: 1px 1px 2px #E24A28;*/
 	color: #fff;
 	font-weight: bold;
 }
 .levelnolarge {
 	width: 40px;
-	height: 40px;
-	line-height: 40px;
-	margin-left: -20px;
-	top: 20px;
-	border-radius: 20px;
+	/*height: 40px;*/
+	/*line-height: 40px;*/
+	/*margin-left: -20px;*/
+	/*top: 20px;*/
+	/*border-radius: 20px;*/
 }
 .question {
 	font-size: 20px;
@@ -183,20 +184,48 @@
 #gtm {
 	display:none;visibility:hidden
 }
-#googleSignIn {
-	position: absolute;
-	bottom: 3px;
+#navbar {
+	/*position: absolute;*/
+	/*bottom: 3px;
 	left: 3px;
 	padding: 5px 3px 1px 6px;
 	background: #fff;
 	border: 1px solid #eee;
-	box-shadow: 1px 1px 1px #ddd;
+	box-shadow: 1px 1px 1px #ddd;*/
+	padding: 0 7px 0 0;
+	background: transparent;
+}
+.g-signin2 {
+	/*position: absolute;*/
+	/*right: 0;*/
 }
 .g-signout {
-	display: block;
+	display: table-cell;
 	font-size: 10pt;
+	padding-right: 20px;
+	vertical-align: middle;
+	background-color: rgba(255, 255, 255, .5);
+	border-radius: 25px 2px 2px 25px;
 }
-	.g-signout:hover {
+	.playerPic {
+		height: 40px;
+		width: 40px;
+		border-radius: 20px;
+		border: 1px solid #444;
+		display: inline-block;
+		vertical-align: middle;
+		margin: 2px 12px 2px 2px;
+		background-size: cover;
+	}
+	.playerName {
+		font-weight: bold;
+		margin-right: 10px;
+	}
+	.playerName, .g-signoutlink {
+		display: inline-block;
+		margin-top: 5px;
+	}
+	.g-signoutlink:hover {
 		text-decoration: none;
 		color: purple;
 	}

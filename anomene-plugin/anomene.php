@@ -3,6 +3,7 @@
  * Plugin Name: Anomene
  */
 
+$timeformat = "F j, Y, g:i a";
 add_action("rest_api_init", function() {
 	register_rest_route("wp/v2", '/r3d4', array(
 			'methods'	=> 'GET',
@@ -10,7 +11,7 @@ add_action("rest_api_init", function() {
 		)
 	); // r3d4
 	register_rest_route("wp/v2", '/validate', array(
-			'methods'	=> 'GET',
+			'methods'	=> 'POST',
 			'callback'	=> 'anomene_validate',
 		)
 	); // validate
@@ -20,7 +21,7 @@ add_action("rest_api_init", function() {
 		)
 	); // user
 	register_rest_route("wp/v2", '/player/levelupdate', array(
-			'methods'	=> 'GET',
+			'methods'	=> 'POST',
 			'callback'	=> 'anomene_player_levelupdate',
 		)
 	); // user
@@ -35,9 +36,10 @@ function anomene_player_token() {
 	$token = $_REQUEST['token'];
 	$name = $_REQUEST['name'];
 	$email = $_REQUEST['email'];
-	$timestamp = time();
+	$timestamp = date("F j, Y, g:i a", time());
 	$device = $_REQUEST['device'];
 	$level = $_REQUEST['level'];
+	$profilepic = $_REQUEST['profilepic'];
 	// in the player table. Fetch or create
 
 	$args = array(
@@ -60,8 +62,9 @@ function anomene_player_token() {
 		add_post_meta($player_id, 'device', $device);
 		add_post_meta($player_id, 'last_level', $level);
 		add_post_meta($player_id, 'first_login_time', $timestamp);
+		add_post_meta($player_id, 'profile_pic', $profilepic);
 
-		if ($postid > 0) {
+		if ($player_id > 0) {
 			// success
 			$return_array = array(
 					'id'	=> $player_id,
@@ -90,12 +93,20 @@ function anomene_player_token() {
 function anomene_player_levelupdate() {
 	// user's level update
 	// data coming in
-	//		google token, level no, timestamp
+	//		user ID, level no, timestamp
 	$player_id = $_REQUEST['id'];
 	$level = $_REQUEST['level'];
-	$timestamp = time();
+	$timestamp = date($timeformat, time());
 
-	add_post_meta($player_id, 'level_' . $level, $timestamp);
+	$level_history = unserialize(get_post_meta($player_id, 'level_history'));
+	if (is_empty($level_history) || !is_array($level_history)) {
+		$level_history = array();
+	}
+	$level_now = array($level, $timestamp);
+	array_push($level_history, $level_now);
+
+	$level_history = serialize($level_history);
+	update_post_meta($player_id, 'level_history', $level_history);
 	update_post_meta($player_id, 'last_level', $level);
 	return 1;
 } // anomene_player_levelupdate

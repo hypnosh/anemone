@@ -2,7 +2,7 @@
 	Author: @hypnosh
 */
 
-const ajaxUrl = "//www.recaptured.in/puzz/";
+const ajaxUrl = "https://recaptured.in/puzz/";
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 $( function() {
 	// YTBD: read localStorage to figure out if user is logged in. if not, force login
@@ -92,7 +92,7 @@ $( function() {
 				}
 				imgurl = imgurl.join(", ");
 			}
-			console.log({imgurl: imgurl});
+			// console.log({imgurl: imgurl});
 			$(".arena").css('backgroundImage', imgurl);
 			document.title = "Anomene - " + o.title;
 			var user = 0;
@@ -115,14 +115,17 @@ $( function() {
 						if (o.next !== false) {
 							localStorage.anemone_level = o.next;
 							// send a bottle to the server with new level data
+							var payload = { id: localStorage.anemone_userid, level: o.next };
 							jQuery.ajax({
 								url: ajaxUrl + "/player/levelupdate",
-								method: 'POST',
-								data: { id: localStorage.anemone_userid, level: o.next }
+								data: payload,
 							}).done(function(result) {
 								console.log({ levelupdate: result });
 								// reload page
 								location.reload();
+							}).fail(function(result) {
+								console.log({ data: payload });
+								console.log({ levelupdatefailed: result });
 							});
 							$("#loading").removeClass("hidden"); // show loader
 						} else {
@@ -146,7 +149,7 @@ $( function() {
 			}); // .answerzone submit
 			
 			var hint5 = o["source-clue"];
-			console.log({ source: hint5 });
+			// console.log({ source: hint5 });
 			if (isMobile) {
 				// mobile device
 				$("#dlkjasd09clue812333").html(hint5);

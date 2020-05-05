@@ -3,8 +3,8 @@
  * Plugin Name: Anomene
  */
 
-$timeformat = "F j, Y, g:i a";
 add_action("rest_api_init", function() {
+	date_default_timezone_set("Asia/Kolkata"); 
 	register_rest_route("wp/v2", '/r3d4', array(
 			'methods'	=> 'GET',
 			'callback'	=> 'anomene_get_level',
@@ -21,7 +21,7 @@ add_action("rest_api_init", function() {
 		)
 	); // user
 	register_rest_route("wp/v2", '/player/levelupdate', array(
-			'methods'	=> 'POST',
+			'methods'	=> 'GET',
 			'callback'	=> 'anomene_player_levelupdate',
 		)
 	); // user
@@ -96,19 +96,16 @@ function anomene_player_levelupdate() {
 	//		user ID, level no, timestamp
 	$player_id = $_REQUEST['id'];
 	$level = $_REQUEST['level'];
-	$timestamp = date($timeformat, time());
+	$timestamp = date("F j, Y, g:i a", time());
 
-	$level_history = unserialize(get_post_meta($player_id, 'level_history'));
-	if (is_empty($level_history) || !is_array($level_history)) {
-		$level_history = array();
-	}
-	$level_now = array($level, $timestamp);
-	array_push($level_history, $level_now);
+	$level_history = unserialize(get_post_meta($player_id, 'level_history', true));
+	
+	$level_history[$level] = $timestamp;
 
-	$level_history = serialize($level_history);
-	update_post_meta($player_id, 'level_history', $level_history);
+	$level_history_json = serialize($level_history);
+	update_post_meta($player_id, 'level_history', $level_history_json);
 	update_post_meta($player_id, 'last_level', $level);
-	return 1;
+	return [1];
 } // anomene_player_levelupdate
 
 function anomene_validate() {

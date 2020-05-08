@@ -2,7 +2,7 @@
 	Author: @hypnosh
 */
 
-const ajaxUrl = "https://recaptured.in/puzz/";
+const ajaxUrl = "https://recaptured.in/puzz/wp-json/wp/v2/";
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 $( function() {
 	// YTBD: read localStorage to figure out if user is logged in. if not, force login
@@ -72,7 +72,7 @@ $( function() {
 	}; // o dummy
 	
 	jQuery.ajax({
-		url: ajaxUrl + "wp-json/wp/v2/r3d4?level=" + level,
+		url: ajaxUrl + "r3d4?level=" + level,
 		success: function(result) {
 
 			o = result;
@@ -117,7 +117,7 @@ $( function() {
 							// send a bottle to the server with new level data
 							var payload = { id: localStorage.anemone_userid, level: o.next };
 							jQuery.ajax({
-								url: ajaxUrl + "/player/levelupdate",
+								url: ajaxUrl + "player/levelupdate",
 								data: payload,
 							}).done(function(result) {
 								console.log({ levelupdate: result });
@@ -279,7 +279,7 @@ function onSignIn(googleUser) {
 	};
 	console.log({token: "Fetched"});
 	jQuery.ajax({
-		url: ajaxUrl + "wp-json/wp/v2/player/token",
+		url: ajaxUrl + "player/token",
 		data: serverObject,
 		method: "POST",
 	}).done(function(result) {
@@ -324,7 +324,7 @@ function gameReset() {
 	var x = prompt("Hark! Who goes there?");
 	console.log(1);
 	jQuery.ajax({
-		url: ajaxUrl + "/wp-json/wp/v2/validate",
+		url: ajaxUrl + "validate",
 		data: { key: x },
 		method: "POST",
 		success: function(result) {

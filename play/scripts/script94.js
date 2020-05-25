@@ -42,7 +42,7 @@ $( function() {
 	if (hashhed[0] == "#debug") {
 		if (hashhed[1] == "f") {
 			$("#loading").addClass("hidden");
-			$("#finished").removeClass("hidden");
+			finishBeta();
 		} else {
 			var level = hashhed[1];
 			var debug = 1;
@@ -87,8 +87,11 @@ $( function() {
 			var imgurl = o.img;
 			if (typeof imgurl == "object") {
 				for (var i = imgurl.length - 1; i >= 0; i--) {
-					imgurlx = imgurl[i].split(":");
-					imgurl[i] = "url(https:" + imgurlx[1] + ")"; // make the protocol https
+					if (!!imgurl[i]) {
+						console.log({img: imgurl[i]});
+						imgurlx = imgurl[i].split(":");
+						imgurl[i] = "url(https:" + imgurlx[1] + ")"; // make the protocol https
+					}
 				}
 				imgurl = imgurl.join(", ");
 			}
@@ -121,8 +124,19 @@ $( function() {
 								data: payload,
 							}).done(function(result) {
 								console.log({ levelupdate: result });
+								var response = "Good job!";
+								var callback = () => {
+										location.reload();
+									};
+								var oboObject = {
+									theObject: $("#answeranswer"), 
+									theText: response, 
+									oneByOneCounter: 0, 
+									delayVarBase: 30, 
+									callback: callback
+								};
+								oneByOne(oboObject);
 								// reload page
-								location.reload();
 							}).fail(function(result) {
 								console.log({ data: payload });
 								console.log({ levelupdatefailed: result });
@@ -131,7 +145,7 @@ $( function() {
 						} else {
 							$("#loaded").fadeOut('fast', function() {
 								$("#loaded").addClass("hidden");
-								$("#finished").removeClass("hidden");
+								finishBeta();
 							});
 						}
 					}
@@ -144,6 +158,12 @@ $( function() {
 					}
 					// **** send ga event with level number & myanswer
 					gaEvent('Answer', 'input', myanswer);
+					var oboObject = {
+						theObject: $("#answeranswer"), 
+						theText: response, 
+						oneByOneCounter: 0, 
+						delayVarBase: 30, 
+					};
 					oneByOne($("#answeranswer"), response, 0);
 				}
 			}); // .answerzone submit
@@ -230,9 +250,9 @@ $( function() {
 }); // $
 
 var oneByOneVar;
-function oneByOne(theObject, theText, oneByOneCounter) {
+function oneByOne(args) {
 	// fill text slowly
-
+	var theObject =  args.theObject, theText =  args.theText, oneByOneCounter = args.oneByOneCounter, delayVarBase = args.delayVarBase, callback = args.callback;
 
 	theObject.attr('disabled', "true");
 	
@@ -241,7 +261,7 @@ function oneByOne(theObject, theText, oneByOneCounter) {
 		theObject.val('');
 		var delayVar = 800;
 	} else {
-		delayVar = Math.random() * 100 + 30;
+		delayVar = Math.random() * 100 + delayVarBase;
 	}
 	var targetText = theObject.val();
 	if (targetText.length == theText.length) {
@@ -249,9 +269,15 @@ function oneByOne(theObject, theText, oneByOneCounter) {
 		theObject.removeAttr('disabled').focus().select();
 
 		clearTimeout(oneByOneVar);
+		callback();
 	} else {
-
-		oneByOneVar = setTimeout(function() { oneByOne(theObject, theText, oneByOneCounter); }, delayVar);
+		var oboObject = {
+			theObject: theObject, 
+			theText: theText, 
+			oneByOneCounter: 0, 
+			delayVarBase: 30, 
+		};
+		oneByOneVar = setTimeout(function() { oneByOne(oboObject); }, delayVar);
 		var runningText = theText.substr(0, oneByOneCounter);
 		oneByOneCounter++;
 		theObject.val(runningText);
@@ -352,3 +378,15 @@ function gaEvent(categoryOfEvent, actionOfEvent, labelOfEvent, valueOfEvent) {
 		eventValue: valueOfEvent
 	});
 } // gaEvent
+
+function finishBeta() {
+	$("#finished").removeClass("hidden");
+	var finishedText = '<h1>Wow! You&rsquo;re good!</h1><p>You&rsquo;ve reached the end of this game&rsquo;s beta. Do let me know on <a href="mailto:amitksharma+anomene@gmail.com">ami...harma@gmail.com</a> how you liked the game, what didn&rsquo;t go well, what should be added, what should be improved upon, and if you would want to tell your friends about Anomene.</p><p>You can <a href="https://www.anomene.com/">join the newsletter</a> to stay updated about what is happening with Anomene and when you can expect a full release.</p><p>Thanks a lot for playing!</p><p>Amit Sharma<br/><a href="https://www.recaptured.in/">Blog</a> - <a href="https://twitter.com/hypnosh">@hypnosh</a></p>';
+	var oboObject = {
+		theObject: $("#middle-column"), 
+		theText: finishedText, 
+		oneByOneCounter: 0, 
+		delayVarBase: 0, 
+	};
+	oneByOne(oboObject);
+}

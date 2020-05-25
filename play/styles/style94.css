@@ -217,11 +217,11 @@
 		margin: 2px 12px 2px 2px;
 		background-size: cover;
 	}
-	.playerName {
+	#playerName {
 		font-weight: bold;
 		margin-right: 10px;
 	}
-	.playerName, .g-signoutlink {
+	#playerName, .g-signoutlink {
 		display: inline-block;
 		margin-top: 5px;
 	}

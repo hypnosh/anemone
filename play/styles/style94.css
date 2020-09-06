@@ -7,6 +7,9 @@
 	background-size: cover;
 	opacity: .5;
 }
+	.hasPseudo .arena {
+		opacity: 1;
+	}
 #dlkjasd09clue812333 {
 	position: absolute;
 	left: 0;

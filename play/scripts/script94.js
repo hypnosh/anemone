@@ -33,6 +33,7 @@ $( function() {
 		localStorage.anemone_level = 17;
 	}
 	if (localStorage.anemone_userid !== undefined) {
+		// force login?
 		$(".g-signin2").addClass("hidden");
 		$(".g-signout").removeClass("hidden");
 	}
@@ -84,23 +85,25 @@ $( function() {
 			if (current > 9999) {
 				$("#levelno").addClass('levelnolarge');
 			}
-			var imgurl = o.img;
-			if (typeof imgurl == "object") {
-				for (var i = imgurl.length - 1; i >= 0; i--) {
-					if (!!imgurl[i]) {
-						console.log({img: imgurl[i]});
-						imgurlx = imgurl[i].split(":");
-						imgurl[i] = "url(https:" + imgurlx[1] + ")"; // make the protocol https
-					}
-				}
-				imgurl = imgurl.join(", ");
+			if (o.pseudo !== undefined) {
+				$("body").addClass("pseudoLevel").addClass("hasPseudo");
+				var imgurl = getImageFromArrays(o.altimg);
+				var docTitle = o.title.split("|")[0];
+				var docQuestion = o.question.split("|")[0];
+			} else {
+				var imgurl = getImageFromArrays(o.img);
+				var docTitle = o.title;
+				var docQuestion = o.question;
 			}
-			// console.log({imgurl: imgurl});
 			$(".arena").css('backgroundImage', imgurl);
-			document.title = "Anomene - " + o.title;
+			
+
+			// console.log({imgurl: imgurl});
+
+			document.title = "Anomene - " + docTitle;
 			var user = 0;
 			// window.history.pushState({'page': current, 'user': user}, "", o.title);
-			$("#question").html(o.question);
+			$("#question").html(docQuestion);
 
 			$("#loading").addClass("hidden"); // remove loader
 			$("#loaded").removeClass("hidden"); // show level
@@ -111,47 +114,91 @@ $( function() {
 			$("#answer").submit(function(e) {
 				e.preventDefault();
 				var myanswer = $("#answeranswer").val().toLowerCase();
-				if (myanswer == o.answer) {
+
+				switch(isPseudo()) {
+					case 0:
+						// no pseudo, normal
+					case -1:
+						// pseudo & pseodu off
+						// answer to compare
+						var theAnswer = o.answer;
+						// routes to take
+						var routes = o.routes;
+						// action to take
+						var theAction = () => {
+							if (o.next !== false) {
+								localStorage.anemone_level = o.next;
+								// send a bottle to the server with new level data
+								var payload = { id: localStorage.anemone_userid, level: o.next };
+								jQuery.ajax({
+									url: ajaxUrl + "player/levelupdate",
+									data: payload,
+								}).done(function(result) {
+									console.log({ levelupdate: result });
+									var response = "Good job!";
+									var callback = () => {
+											$("#loading").removeClass("hidden"); // show loader
+											location.reload();
+										};
+									var oboObject = {
+										theObject: $("#answeranswer"), 
+										theText: response, 
+										oneByOneCounter: 0, 
+										delayVarBase: 30, 
+										callback: callback
+									};
+									oneByOne(oboObject);
+									// reload page
+								}).fail(function(result) {
+									console.log({ data: payload });
+									console.log({ levelupdatefailed: result });
+								});
+							} else {
+								$("#loaded").fadeOut('fast', function() {
+									$("#loaded").addClass("hidden");
+									finishBeta();
+								});
+							}
+						};
+					break;
+					case 1:
+						// pseudo & pseudo on
+						// pseudo answer to compare
+						var theAnswer = o.pseudo;
+						// pseudo routes to take
+						var routes = o.pseudo_routes;
+						// pseudo action to take - , question & 
+						var theAction = () => {
+							$("body").removeClass("hasPseudo"); // change pseudo tag
+							var imgurl = getImageFromArrays(o.img);
+							$(".arena").css('backgroundImage', imgurl); // background image
+							var docTitle = o.title.split("|")[1];
+							document.title = "Anomene - " + docTitle; // title
+							var docQuestion = o.question.split("|")[1];
+							var oboObject = {
+								theObject: $("#question"), 
+								theText: docQuestion, 
+								oneByOneCounter: 0, 
+								delayVarBase: 15, 
+								callback: () => {}
+							};
+							oneByOne(oboObject); // question
+							$("#answeranswer").val('');
+						};
+					break;
+					default:
+				} // isPseudo?
+
+
+				
+				if (myanswer == theAnswer) {
 					// success! move ahead!
 					// **** send ga event with level number & answer - ??
-					if (debug == 0) {
-						if (o.next !== false) {
-							localStorage.anemone_level = o.next;
-							// send a bottle to the server with new level data
-							var payload = { id: localStorage.anemone_userid, level: o.next };
-							jQuery.ajax({
-								url: ajaxUrl + "player/levelupdate",
-								data: payload,
-							}).done(function(result) {
-								console.log({ levelupdate: result });
-								var response = "Good job!";
-								var callback = () => {
-										location.reload();
-									};
-								var oboObject = {
-									theObject: $("#answeranswer"), 
-									theText: response, 
-									oneByOneCounter: 0, 
-									delayVarBase: 30, 
-									callback: callback
-								};
-								oneByOne(oboObject);
-								// reload page
-							}).fail(function(result) {
-								console.log({ data: payload });
-								console.log({ levelupdatefailed: result });
-							});
-							$("#loading").removeClass("hidden"); // show loader
-						} else {
-							$("#loaded").fadeOut('fast', function() {
-								$("#loaded").addClass("hidden");
-								finishBeta();
-							});
-						}
-					}
-
+					console.log({1: theAnswer, 2: myanswer});
+					theAction();
+					// correct answer
 				} else {
-					var routes = o.routes;
+					
 					var response = routes[myanswer];
 					if (response == undefined) {
 						response = "Wrong. Try again";
@@ -165,10 +212,25 @@ $( function() {
 						delayVarBase: 30, 
 					};
 					oneByOne($("#answeranswer"), response, 0);
-				}
+				} // wrong answer, so route hints
 			}); // .answerzone submit
 			
 			var hint5 = o["source-clue"];
+			switch(isPseudo()) {
+				case 0:
+					// no pseudo, normal
+					hint5 = hint5;
+				break;
+				case 1:
+					// pseudo & pseudo on
+					hint5 = hint5.split("|")[0];
+				break;
+				case -1:
+					// pseudo & pseodu off
+					hint5 = hint5.split("|")[1];
+				break;
+				default:
+			} // isPseudo?
 			// console.log({ source: hint5 });
 			if (isMobile) {
 				// mobile device
@@ -192,10 +254,27 @@ $( function() {
 
 				var btn = $(event.relatedTarget);
 				var whichClue = btn.data("name");
-				var objj = o[whichClue];
 				var objjcluenumber = btn.data("clue");
+				var objj = o[whichClue];
+				
 				var objjtype = objj.type;
 				var objjvalue = objj.value;
+				switch(isPseudo()) {
+					case 0:
+						// no pseudo, normal
+						objjvalue = objjvalue;
+					break;
+					case 1:
+						// pseudo & pseudo on
+						objjvalue = objjvalue.split("|")[0];
+					break;
+					case -1:
+						// pseudo & pseodu off
+						objjvalue = objjvalue.split("|")[1];
+					break;
+					default:
+				} // isPseudo?
+				
 
 				var modal = $(this);
 				modal.find(".modal-title").text("Clue #" + objjcluenumber);
@@ -252,35 +331,47 @@ $( function() {
 var oneByOneVar;
 function oneByOne(args) {
 	// fill text slowly
-	var theObject =  args.theObject, theText =  args.theText, oneByOneCounter = args.oneByOneCounter, delayVarBase = args.delayVarBase, callback = args.callback;
+	// var theObject =  args.theObject, theText =  args.theText, oneByOneCounter = args.oneByOneCounter, delayVarBase = args.delayVarBase, callback = args.callback;
+	var {theObject, theText, oneByOneCounter, delayVarBase, callback} = args;
+	
+	var isInput = theObject.is('input');
 
 	theObject.attr('disabled', "true");
-	
 	if (oneByOneCounter == 0) {	
 		// first iteration
-		theObject.val('');
+		if (isInput) {
+			theObject.val('');
+		} else {
+			theObject.html('');
+		}
 		var delayVar = 800;
 	} else {
 		delayVar = Math.random() * 100 + delayVarBase;
 	}
-	var targetText = theObject.val();
+	var targetText = (isInput ? theObject.val() : theObject.html());
 	if (targetText.length == theText.length) {
 		// routine complete
-		theObject.removeAttr('disabled').focus().select();
+		if (isInput) theObject.removeAttr('disabled').focus().select();
 
 		clearTimeout(oneByOneVar);
 		callback();
 	} else {
+		oneByOneCounter++;
 		var oboObject = {
 			theObject: theObject, 
 			theText: theText, 
-			oneByOneCounter: 0, 
+			oneByOneCounter: oneByOneCounter, 
 			delayVarBase: 30, 
+			callback: callback,
 		};
 		oneByOneVar = setTimeout(function() { oneByOne(oboObject); }, delayVar);
 		var runningText = theText.substr(0, oneByOneCounter);
-		oneByOneCounter++;
-		theObject.val(runningText);
+		
+		if (isInput) {
+			theObject.val(runningText);
+		} else {
+			theObject.html(runningText);
+		}
 	}
 	
 } // oneByOne
@@ -389,4 +480,29 @@ function finishBeta() {
 		delayVarBase: 0, 
 	};
 	oneByOne(oboObject);
-}
+} // finishBeta
+function getImageFromArrays(imgurl) {
+	if (typeof imgurl == "object") {
+		for (var i = imgurl.length - 1; i >= 0; i--) {
+			if (!!imgurl[i]) {
+				// console.log({img: imgurl[i]});
+				imgurlx = imgurl[i].split(":");
+				imgurl[i] = "url(https:" + imgurlx[1] + ")"; // make the protocol https
+			}
+		}
+		imgurl = imgurl.join(", ");
+	}
+	return imgurl;
+} // getImageFromArrays
+
+function isPseudo() {
+	if ($("body").hasClass("pseudoLevel")) {
+		if ($("body").hasClass("hasPseudo")) {
+			return 1; // pseudo on
+		} else {
+			return -1; // pseudo level but off
+		}
+	} else {
+		return 0; // not a pseudo level
+	}
+} // isPseudo

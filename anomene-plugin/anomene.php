@@ -6,7 +6,7 @@
 add_action("rest_api_init", function() {
 	date_default_timezone_set("Asia/Kolkata"); 
 	register_rest_route("wp/v2", '/r3d4', array(
-			'methods'	=> 'GET',
+			'methods'	=> 'POST',
 			'callback'	=> 'anomene_get_level',
 		)
 	); // r3d4
@@ -15,12 +15,12 @@ add_action("rest_api_init", function() {
 			'callback'	=> 'anomene_validate',
 		)
 	); // validate
-	register_rest_route("wp/v2", '/player/token', array(
+	register_rest_route("wp/v2", '/player_token', array(
 			'methods'	=> 'POST',
 			'callback'	=> 'anomene_player_token',
 		)
 	); // user
-	register_rest_route("wp/v2", '/player/levelupdate', array(
+	register_rest_route("wp/v2", '/player_levelupdate', array(
 			'methods'	=> 'GET',
 			'callback'	=> 'anomene_player_levelupdate',
 		)
@@ -163,6 +163,16 @@ function anomene_get_level() {
 					"value"	=> $value3,
 				);
 	}
+	if ($paraphernalia['clue_3a']['value'] == null) {
+		$clue3a = null;	
+	} else {
+		$value3a = $paraphernalia['clue_3a']['value'];
+		$value3a = (is_numeric($value3a)) ? (wp_get_attachment_image_src($value3a)[0]) : ($value3a);
+		$clue3a = array(
+					"type"	=> $paraphernalia['clue_3a']['type'],
+					"value"	=> $value3a,
+				);
+	}
 	if ($paraphernalia['clue_4']['value'] == null) {
 		$clue4 = null;	
 	} else {
@@ -176,7 +186,7 @@ function anomene_get_level() {
 	$img[0] = get_the_post_thumbnail_url($level, 'full');
 	$img[1] = get_the_post_thumbnail_url($level, 'large');
 	$img[2] = get_the_post_thumbnail_url($level, 'medium');
-
+	
 
 	$out = array(
 		"current"		=> $paraphernalia['current']['value'],
@@ -188,9 +198,11 @@ function anomene_get_level() {
 		"clue-1"		=> $clue1,
 		"clue-2"		=> $clue2,
 		"clue-3"		=> $clue3,
+		"clue-3a"		=> $clue3a,
 		"clue-4"		=> $clue4,
 		"source-clue"	=> $source_clue,
 		"next"			=> $paraphernalia['next']['value'],
+		"slug"			=> $lvl->post_name,
  	);
 
 	$alt_value = $paraphernalia['alt_image']['value'];

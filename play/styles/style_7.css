@@ -1,3 +1,16 @@
+body {
+	background: #666;
+}
+#brand {
+	opacity: .3;
+	width: 120px;
+	position: absolute;
+	bottom: 5px;
+	left: 5px;
+}
+#brand img {
+	width: 100%;
+}
 .arena {
 	position: absolute;
 	top: 0;
@@ -5,6 +18,7 @@
 	right: 0;
 	bottom: 0;
 	background-size: cover;
+	background-position: center;
 	opacity: .5;
 }
 	.hasPseudo .arena {
@@ -16,6 +30,54 @@
 	top: -200px;
 	display: none;
 }
+.customtoast {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -120px; width: 240px;
+	margin-top: -30px; min-height: 60px;
+	background: #fff;
+	padding: 20px 50px;
+	box-shadow: 0 3px 8px 0px #333;
+	font-size: 14px;
+	text-align: center;
+	z-index: 5000;
+	display: none;
+}
+#login-required {
+	display: none;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -200px; width: 400px;
+	margin-top: -125px; height: 250px;
+	background-color: rgba(255, 255, 255, .9);
+	border-radius: 2px;
+	padding: 20px 15px;
+	box-sizing: border-box;
+	z-index: 100;
+}
+	#login-required h1 {
+		text-align: center;
+	}
+	#login-required h1 img {
+		width: 210px;
+	}
+	#login-required p {
+		font-size: 15pt;
+		text-align: center;
+	}
+	#login-required .g-signin2 {
+		position: absolute;
+		bottom: 30px;
+		left: 50%;
+		margin-left: -60px;
+	}
+	#login-required .disclaimer {
+		text-align: center;
+		font-size: 9pt;
+		color: #666;
+	}
 #loading {
 	position: absolute;
 	left: 50%;
@@ -41,7 +103,7 @@
 	/*height: 30px;*/
 	/*margin-left: -15px;*/
 	line-height: 50px;
-	/*border-radius: 35px;*/
+	border-radius: 2px;
 	text-align: center;
 	background-color: #F25A38;
 	/*box-shadow: 1px 1px 2px #E24A28;*/
@@ -59,6 +121,10 @@
 .question {
 	font-size: 20px;
 }
+.message {
+	font-size: 17px;
+	color: #555;
+}
 .answerzone {
 	position: absolute;
 	left: 50%;
@@ -66,6 +132,7 @@
 	bottom: 30%;
 	padding: 20px;
 	background: rgba(255,255,255,.9);
+	border-radius: 2px;
 }
 
 .answerme {
@@ -77,8 +144,6 @@
 	text-decoration: underline;
 	display: inline;
 }
-
-
 
 .answersubmit {
 	display: inline;
@@ -119,18 +184,14 @@
 	font-size: 25px;
 	text-align: center;
 	border: none;
-	background: none;
-	color: #400A0A;
+	background: rgba(2,2,2,.2);
+	color: coral;
+	border-radius: 3px;
+	line-height: 1.2em;
 }
 .clue:not([disabled]):hover {
 	background: rgba(254,254,254,.3);
 }
-/*.clue-1 {
-	color: #8C2029;
-}
-.clue-2 {
-	color: #848C45;
-}*/
 .clue-embedded {
 	width: 100%;
 	height: 200px;
@@ -138,9 +199,6 @@
 	background-size: contain, auto;
 	background-position: center center;
 }
-/*.clue-4 {
-	color: #BCBF5A;
-}*/
 
 .tooltip-inner {
 	font-size: 9pt;
@@ -233,7 +291,9 @@
 		color: purple;
 	}
 #middle-column {
-	padding-top: 70px;
+	margin-top: 60px;
+	padding-top: 10px;
+	background: #fff;
 }
 	#middle-column h1 {
 		font-weight: bold;

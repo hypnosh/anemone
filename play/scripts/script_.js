@@ -550,7 +550,7 @@ function gaEvent(categoryOfEvent, actionOfEvent, labelOfEvent, valueOfEvent) {
 	if (categoryOfEvent == "Level") {
 		ga('send', {
 			hitType: 'pageview',
-			title: document.title,
+			title: valueOfEvent + " - " + document.title,
 			location: window.location
 		});
 	}

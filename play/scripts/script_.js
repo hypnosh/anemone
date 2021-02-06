@@ -201,7 +201,18 @@ $( function() {
 					default:
 				} // isPseudo?
 
-				if (myanswer == theAnswer) {
+				if (theAnswer.indexOf(",") > -1) {
+					// multiple answers
+					
+					var answersArray = theAnswer.split(",");
+					var truthy = (answersArray.filter(function(answer) {
+						return (answer.indexOf(myanswer) > -1);
+					}).length > 0);
+				} else {
+					// single answer
+					var truthy = (myanswer === theAnswer);
+				}
+				if (truthy) {
 					// success! move ahead!
 					// **** send ga event with level number & answer - ??
 					// consoleLog({1: theAnswer, 2: myanswer});

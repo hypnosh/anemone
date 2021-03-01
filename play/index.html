@@ -5,12 +5,17 @@
 	
 	<meta http-equiv="Content-Security-Policy" content="style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://*.bootstrapcdn.com https://*.google.com https://fonts.googleapis.com https://fonts.gstatic.com https://*.googletagmanager.com; connect-src https://recaptured.in https://*.google-analytics.com; script-src 'self' 'nonce-12837876fdba' https://*.jquery.com https://cdnjs.cloudflare.com https://*.bootstrapcdn.com https://*.google.com https://fonts.googleapis.com https://fonts.gstatic.com https://*.googletagmanager.com https://*.google-analytics.com; object-src 'none'">
 
-	
+	<link rel="manifest" href="manifest.json" crossorigin="anonymous">
 	<!-- Google Analytics -->
 	<script nonce="12837876fdba">
 		window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
 		ga('create', 'UA-3628190-18', 'auto');
 		ga('send', 'pageview');
+	</script>
+	<script type="text/javascript" nonce="12837876fdba">
+	    if ('serviceWorker' in navigator) {
+	      navigator.serviceWorker.register('service-worker.js');
+	    }
 	</script>
 	<script async src='https://www.google-analytics.com/analytics.js'></script>
 	<!-- End Google Analytics -->
